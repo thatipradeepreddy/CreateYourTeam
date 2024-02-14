@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, StyleSheet, TextInput, View, Text, ScrollView } from "react-native";
+import { Button, StyleSheet, TextInput, View, Text, ScrollView, ImageBackground } from "react-native";
 import { Dialog } from "../Components/Dialog";
 
 export function ForgotPassword() {
@@ -95,22 +95,29 @@ export function ForgotPassword() {
             </View>
         );
     };
-
+    const image = { uri: 'https://images.unsplash.com/photo-1593341646782-e0b495cff86d?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwxMTM3MjU5NXx8ZW58MHx8fHx8' }
     return (
         <View style={styles.main}>
-            <ScrollView
-                showsVerticalScrollIndicator={false}
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.scrollable}
-            >
-                <View style={styles.innerView}>
-                    {renderHeading()}
-                    {renderDetails()}
-                    {renderButton()}
-                    {/* {renderDialog()} */}
-                    <Text>{verificationMessage}</Text>
-                </View>
-            </ScrollView>
+            <View style={styles.backImageContainer}>
+                <ImageBackground
+                    source={image}
+                    style={styles.backgroundImage}
+                >
+                    <ScrollView
+                        showsVerticalScrollIndicator={false}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={styles.scrollable}
+                    >
+                        <View style={styles.innerView}>
+                            {renderHeading()}
+                            {renderDetails()}
+                            {renderButton()}
+                            {/* {renderDialog()} */}
+                            <Text>{verificationMessage}</Text>
+                        </View>
+                    </ScrollView>
+                </ImageBackground>
+            </View>
         </View>
     );
 }
@@ -118,7 +125,6 @@ export function ForgotPassword() {
 const styles = StyleSheet.create({
     input: {
         height: 40,
-        width: 300,
         borderColor: 'gray',
         borderWidth: 1,
         paddingHorizontal: 10,
@@ -128,16 +134,16 @@ const styles = StyleSheet.create({
     },
     main: {
         backgroundColor: '#fff',
-        padding: 20,
-        flex: 1, // Takes up the whole screen height
-        justifyContent: 'center', // Aligns children components vertically
+        flex: 1,
+        justifyContent: 'center',
         alignItems: 'center',
     },
     scrollable: {
-        flexGrow: 1, // Allows ScrollView to take up remaining space
+        flexGrow: 1,
         width: '100%',
     },
     innerView: {
+        padding: 20,
         flex: 1,
         justifyContent: 'center'
     },
@@ -148,7 +154,18 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 28,
         fontWeight: 'bold',
-        color: "red",
+        color: "black",
         marginBottom: 80
     },
+    backImageContainer: {
+        flex: 1,
+        width: '100%',
+        height: '100%',
+    },
+    backgroundImage: {
+        flex: 1,
+        resizeMode: 'cover',
+        width: '100%',
+        height: '100%',
+    }
 });

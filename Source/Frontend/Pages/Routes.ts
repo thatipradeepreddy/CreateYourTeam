@@ -4,7 +4,7 @@ export interface NavigationParamList {
     login: undefined;
     register: undefined;
     playerslist: undefined;
-    addplayer: undefined;
+    addplayer: any;
     editplayer: any;
     [key: string]: undefined;
 }

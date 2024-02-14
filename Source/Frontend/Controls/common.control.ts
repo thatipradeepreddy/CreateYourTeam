@@ -92,9 +92,9 @@ export const deleteteam = (id: string) => {
 	})
 }
 
-export const deletePlayer = (name: string) => {
+export const deletePlayer = (id: string, name: string) => {
 	return new Promise((resolve, reject) => {
-		fetch(`http://192.168.43.141:5000/${name}`, {
+		fetch(`http://192.168.43.141:5000/${id}/${name}`, {
 			method: 'DELETE',
 			headers: {
 				'Content-Type': 'application/json',
@@ -139,6 +139,29 @@ export const getPlayerById = (id: string): Promise<PlayerOptionalProps> => {
 	});
 };
 
+export const getPlayerByIdName = (id: string, name: string): Promise<PlayerOptionalProps> => {
+	return new Promise((resolve, reject) => {
+		fetch(`http://192.168.43.141:5000/getplayerbyname/${id}/${name}`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		})
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(`HTTP error! Status: ${response.status}`);
+				}
+				return response.json();
+			})
+			.then((data) => {
+				resolve(data as PlayerOptionalProps);
+			})
+			.catch((error) => {
+				reject(error);
+			});
+	});
+};
+
 export const postPlayer = (playerData: PlayerProps) => {
 	return new Promise((resolve, reject) => {
 		fetch('http://192.168.43.141:5000/createdata', {
@@ -147,7 +170,32 @@ export const postPlayer = (playerData: PlayerProps) => {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify(playerData),
-			
+
+		})
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(`HTTP error! Status: ${response.status}`)
+				}
+				return response.json()
+			})
+			.then((data) => {
+				resolve(data)
+			})
+			.catch((error) => {
+				reject(error)
+			})
+	})
+}
+
+export const postNewPlayer = (playerData: Player, id: string, place: string) => {
+	return new Promise((resolve, reject) => {
+		fetch(`http://192.168.43.141:5000/addNewPlayer/${id}/${place}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(playerData),
+
 		})
 			.then((response) => {
 				if (!response.ok) {

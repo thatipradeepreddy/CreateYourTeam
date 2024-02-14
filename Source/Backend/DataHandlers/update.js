@@ -2,13 +2,16 @@ import { CricketersData } from '../Connections/database.js';
 
 function updateData(request, response) {
   const cricketerData = {
-    name: request.body.name,
-    age: request.body.age,
-    nation: request.body.nation,
-    ranking: request.body.ranking,
-    premierLeague: request.body.premierLeague,
-    image: request.body.image,
-    wikipediaUrl: request.body.wikipediaUrl,
+    place: request.body.place,
+    player: request.body.player.map(player => ({
+      name: player.name,
+      age: player.age,
+      nation: player.nation,
+      ranking: player.ranking,
+      premierLeague: player.premierLeague,
+      image: player.image,
+      wikipediaUrl: player.wikipediaUrl
+    }))
   };
 
   CricketersData.findByIdAndUpdate(

@@ -14,7 +14,7 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen
+        {/* <Stack.Screen
           name="landing"
           component={LandingPage}
           options={({ route }) => ({
@@ -28,7 +28,7 @@ const App = () => {
           options={({ route }) => ({
             headerShown: false
           })}
-        />
+        /> */}
 
         <Stack.Screen
           name="addplayer"

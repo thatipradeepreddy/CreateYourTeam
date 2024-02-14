@@ -15,6 +15,9 @@ import { deleteUser } from "./SingUpHandlers/deleteuser.js";
 import router from "./SingUpHandlers/forgot.js";
 import { loginUser } from "./SingUpHandlers/login.js";
 import { deletePlayerByName } from "./DataHandlers/deleteplayerbyname.js";
+import { addNewPlayer } from "./DataHandlers/addnewplayer.js";
+import { updatePlayerByIdAndName } from "./DataHandlers/editPlayerByName.js";
+import { getPlayerByIdAndName } from "./DataHandlers/getPlayerByName.js";
 
 const app = express();
 app.use(
@@ -37,8 +40,13 @@ app.put("/:id", updateData)
 
 app.delete("/:id", deleteData);
 
-app.delete("/:name", deletePlayerByName);
+app.delete("/:id/:name", deletePlayerByName);
 
+app.put("/editplayerbyname/:id/:name", updatePlayerByIdAndName);
+
+app.get("/getplayerbyname/:id/:name", getPlayerByIdAndName);
+
+app.delete("/addNewPlayer/:id/:place", addNewPlayer);
 
 //For User Registration
 

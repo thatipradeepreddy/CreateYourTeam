@@ -1,9 +1,9 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
 import React, { useEffect, useState } from "react";
-import { View, TextInput, StyleSheet, Text, Button, ScrollView, ImageBackground } from "react-native";
+import { View, TextInput, StyleSheet, Text, Button, ScrollView, ImageBackground, TouchableOpacity } from "react-native";
 import { postPlayer, updatePlayer } from "../Controls/common.control";
 import { NavigationProps } from "./Routes";
+import ImagePicker from 'react-native-image-picker';
 
 export interface Player {
     name: string;
@@ -73,7 +73,8 @@ export function BasicInfo() {
             ]
         });
     };
-    
+
+
 
     const handleViewPlayer = () => {
         navigation.navigate('playerslist');
@@ -86,7 +87,7 @@ export function BasicInfo() {
     ) => {
         const updatedPlayers = [...playerState.player];
         updatedPlayers[index][field] = value;
-        setPlayerState({ ...playerState, player: updatedPlayers});
+        setPlayerState({ ...playerState, player: updatedPlayers });
     };
 
     const handleSubmit = () => {
@@ -135,7 +136,7 @@ export function BasicInfo() {
             <View style={styles.inputsContainer}>
                 <Text>Place</Text>
                 <TextInput
-                    style={styles.input}
+                    style={styles.inputHeading}
                     onChangeText={(text) => setPlayerState({ ...playerState, place: text })}
                     placeholder="Enter Place"
                     value={playerState.place}
@@ -143,8 +144,9 @@ export function BasicInfo() {
 
                 />
                 {playerState.player.map((player, index) => (
-                    <View key={index}>
-                        <Text>Name</Text>
+                    <View style={styles.playerStyle} key={index}>
+                        <Text style={styles.count}>{`Player: ${index + 1}`}</Text>
+                        <Text style={styles.inputHeadings}>Name</Text>
                         <TextInput
                             style={styles.input}
                             onChangeText={(text) =>
@@ -155,7 +157,7 @@ export function BasicInfo() {
 
                         />
 
-                        <Text>Age</Text>
+                        <Text style={styles.inputHeadings}>Age</Text>
                         <TextInput
                             style={styles.input}
                             onChangeText={(text) =>
@@ -165,7 +167,7 @@ export function BasicInfo() {
                             placeholderTextColor={'black'}
                         />
 
-                        <Text>Nation</Text>
+                        <Text style={styles.inputHeadings}>Nation</Text>
                         <TextInput
                             style={styles.input}
                             onChangeText={(text) =>
@@ -176,7 +178,7 @@ export function BasicInfo() {
                             placeholderTextColor={'black'}
                         />
 
-                        <Text>Ranking</Text>
+                        <Text style={styles.inputHeadings}>Ranking</Text>
                         <TextInput
                             style={styles.input}
                             onChangeText={(text) =>
@@ -186,7 +188,7 @@ export function BasicInfo() {
                             placeholderTextColor={'black'}
                         />
 
-                        <Text>Premier League</Text>
+                        <Text style={styles.inputHeadings}>Premier League</Text>
                         <TextInput
                             style={styles.input}
                             onChangeText={(text) =>
@@ -196,7 +198,7 @@ export function BasicInfo() {
                             placeholderTextColor={'black'}
                         />
 
-                        <Text>Image</Text>
+                        <Text style={styles.inputHeadings}>Image</Text>
                         <TextInput
                             style={styles.input}
                             onChangeText={(text) =>
@@ -206,7 +208,7 @@ export function BasicInfo() {
                             placeholderTextColor={'black'}
                         />
 
-                        <Text>Wikipedia Url</Text>
+                        <Text style={styles.inputHeadings}>Wikipedia Url</Text>
                         <TextInput
                             style={styles.input}
                             onChangeText={(text) =>
@@ -217,24 +219,6 @@ export function BasicInfo() {
                         />
                     </View>
                 ))}
-                <View style={styles.buttonContainer}>
-                    <Button
-                        color={'#487790'}
-                        title="View"
-                        onPress={handleViewPlayer}
-
-                    />
-                    <Button
-                        color={'#487790'}
-                        title="Add"
-                        onPress={handleAddPlayer}
-                    />
-                    <Button
-                        color={'#487790'}
-                        title={editPlayer === 'add' ? "Submit" : "Update"}
-                        onPress={handleSubmit}
-                    />
-                </View>
             </View>
         </View>
     );
@@ -251,6 +235,21 @@ export function BasicInfo() {
                     <ScrollView contentContainerStyle={styles.scrollable}>
                         {renderContent()}
                     </ScrollView>
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity style={styles.close} onPress={handleViewPlayer}>
+                            <Text style={styles.closeButton}>View</Text>
+                        </TouchableOpacity>
+
+                        {editPlayer === "add" ? (
+                            <TouchableOpacity style={styles.close} onPress={handleAddPlayer}>
+                                <Text style={styles.closeButton}>Add</Text>
+                            </TouchableOpacity>) : ''}
+
+                        <TouchableOpacity style={styles.close} onPress={handleSubmit}>
+                            <Text style={styles.closeButton}>{editPlayer === 'add' ? "Submit" : "Update"}</Text>
+                        </TouchableOpacity>
+
+                    </View>
                 </ImageBackground>
             </View>
         )
@@ -265,22 +264,60 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
         justifyContent: 'center'
     },
+    count: {
+        padding: 6,
+        borderStyle: 'solid',
+        textAlign: 'center',
+        fontSize: 16,
+        backgroundColor: 'rgba(228, 168, 214, 0.3)',
+        borderColor: 'black',
+        borderWidth: 1.5,
+        borderTopLeftRadius: 7.9,
+        borderTopRightRadius: 7.9
+    },
+    playerStyle: {
+        borderWidth: 1,
+        borderStyle: 'solid',
+        borderColor: 'black',
+        borderRadius: 10,
+        marginTop: 10,
+        backgroundColor: 'rgba(124, 189, 181, 0.3)'
+    },
+    inputHeadings: {
+        marginTop: 10,
+        marginLeft: 4
+    },
     input: {
         height: 40,
         borderColor: '#878b95',
         borderWidth: 1.5,
         paddingHorizontal: 10,
-        marginBottom: 10,
-        borderRadius: 10,
+        borderRadius: 8,
+        backgroundColor: 'rgba(124, 189, 181, 0.4)',
+        fontWeight: '800'
+
+    },
+    inputHeading: {
+        height: 40,
+        borderColor: '#878b95',
+        borderWidth: 1.5,
+        paddingHorizontal: 10,
+        borderRadius: 8,
+        textAlign: 'center',
+        fontWeight: '900',
+        backgroundColor: 'rgba(213, 144, 45, 0.6)',
+        letterSpacing: 5
+
     },
     main: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
+
     buttonContainer: {
-        marginTop: 20,
-        flex: 1,
+        padding:10,
+        marginBottom:4,
         justifyContent: 'space-around',
         alignItems: 'center',
         flexDirection: 'row'
@@ -288,12 +325,15 @@ const styles = StyleSheet.create({
     inputsContainer: {
 
     },
+
     heading: {
         fontSize: 28,
         marginTop: 30,
         textAlign: 'center',
-        marginBottom: 15
+        marginBottom: 15,
+        fontWeight: '600'
     },
+
     scrollable: {
         flexGrow: 1,
         width: '100%'
@@ -309,5 +349,16 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
     },
+    closeButton: {
+        padding: 10,
+        fontSize: 16,
+        color: 'black',
+        textAlign: 'center',
+    },
+    close: {
+        justifyContent: 'center',
+        backgroundColor: '#487790',
+        borderRadius: 8,
+    }
 
 });

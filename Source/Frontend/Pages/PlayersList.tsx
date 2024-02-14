@@ -4,7 +4,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Dialog } from "../Components/Dialog";
-import { deletePlayer, fetchPlayers, getPlayerById } from "../Controls/common.control";
+import { deletePlayer, deleteteam, fetchPlayers, getPlayerById, getPlayerByIdName } from "../Controls/common.control";
 import { NavigationProps } from "./Routes";
 // import { Player } from "./BasicInfo";
 
@@ -32,6 +32,7 @@ export function PlayersList() {
     const [playerToDelete, setPlayerToDelete] = useState<PlayerProps | null>(null);
     const [playerState, setPlayerState] = useState<PlayerProps[]>([]);
     const [expandedTeams, setExpandedTeams] = useState<{ [key: string]: boolean }>({});
+    const [isDeleteDialogVisible, setDeleteDialogVisible] = useState<boolean>(false);
 
     useEffect(() => {
         fetchPlayers()
@@ -43,26 +44,73 @@ export function PlayersList() {
             });
     }, []);
 
-    const handleDelete = (index: number) => {
-        const playerToDelete = playerState[index];
-        setPlayerToDelete(playerToDelete);
-        setDialogVisible(true);
-    };
 
-    const handleDeletePlayer = (name: string) => {
-        const playerToDelete = playerState.find(team => team.player.some(player => player.name === name));
+    const handleDeletePlayer = (id: string, name: string) => {
+        const playerToDelete = playerState.find(team => team._id === id && team.player.some(player => player.name === name));
         if (playerToDelete) {
             setPlayerToDelete(playerToDelete);
-            setDialogVisible(true);
+            setDeleteDialogVisible(true);
         }
     };
+
+    const handleConfirmDeletePlayer = () => {
+        if (playerToDelete && playerToDelete.player && playerToDelete.player.length > 0) {
+            const { _id, player: [{ name }] } = playerToDelete;
+            deletePlayer(_id, name)
+                .then(() => {
+                    setPlayerState(prevPlayers =>
+                        prevPlayers.map(player => {
+                            if (player._id === _id) {
+                                return {
+                                    ...player,
+                                    player: player.player.filter(p => p.name !== name)
+                                };
+                            }
+                            return player;
+                        })
+                    );
+                    console.log('Player deleted successfully');
+                    setPlayerToDelete(null);
+                    setDeleteDialogVisible(false);
+                })
+                .catch(error => {
+                    console.error('Error deleting player:', error);
+                });
+        }
+    };
+
+    const renderPlayerDialogContent = (player: Player) => {
+        return (
+            <Text key={player.name}>
+                Are you sure you want to delete <Text style={styles.alertMessage}>{player.name}</Text>?
+            </Text>
+        )
+    }
+
+    const renderPlayerDialog = (player: Player) => {
+        if (!player.name) {
+            return null
+        }
+        return (
+            <Dialog
+                isVisible={isDeleteDialogVisible}
+                onClose={() => {
+                    setPlayerToDelete(null);
+                    setDeleteDialogVisible(false);
+                }}
+                onConfirm={handleConfirmDeletePlayer}
+            >
+                {renderPlayerDialogContent(player)}
+            </Dialog>
+        )
+    }
 
     const toggleTeamExpansion = (teamId: string) => {
         setExpandedTeams(prevState => ({
             ...prevState,
             [teamId]: !prevState[teamId]
-        }));
-    };
+        }))
+    }
 
     const handleEdit = async (id: string) => {
         try {
@@ -71,11 +119,35 @@ export function PlayersList() {
         } catch (error) {
             console.error('Error navigating to editPlayer:', error);
         }
+    }
+
+    const handleEditByName = async (id: string, name: string) => {
+        try {
+            const playerData: PlayerProps = await getPlayerByIdName(id, name);
+            navigation.navigate('editplayer', { id, name, playerData });
+        } catch (error) {
+            console.error('Error navigating to editPlayer:', error);
+        }
+    }
+
+    const handleAddNewPlayer = () => {
+        if (playerState[0]?._id && playerState[0]?.place) {
+            navigation.navigate('addplayer', { id: playerState[0]._id, place: playerState[0].place });
+        } else {
+            console.error('Cannot add new player: Place information is missing.');
+        }
     };
+
+
+    const handleDelete = (index: number) => {
+        const playerToDelete = playerState[index];
+        setPlayerToDelete(playerToDelete);
+        setDialogVisible(true);
+    }
 
     const handleConfirmDelete = () => {
         if (playerToDelete) {
-            deletePlayer(playerToDelete._id)
+            deleteteam(playerToDelete._id)
                 .then(() => {
                     setPlayerState(prevPlayers =>
                         prevPlayers.filter(player => player._id !== playerToDelete._id)
@@ -88,15 +160,15 @@ export function PlayersList() {
                     console.error('Error deleting team:', error);
                 });
         }
-    };
+    }
 
     const renderDialogContent = (player: PlayerProps) => {
         return (
             <Text key={player._id}>
                 Are you sure you want to delete <Text style={styles.alertMessage}>{player.place}</Text>?
             </Text>
-        );
-    };
+        )
+    }
 
     const renderDialog = () => {
         if (!playerToDelete) {
@@ -113,30 +185,6 @@ export function PlayersList() {
                 onConfirm={handleConfirmDelete}
             >
                 {renderDialogContent(playerToDelete)}
-            </Dialog>
-        );
-    };
-
-    const renderPlayerDialog = (player: Player) => {
-        if (!playerToDelete) {
-            return null;
-        }
-
-        return (
-            <Dialog
-                isVisible={isDialogVisible}
-                onClose={() => {
-                    setPlayerToDelete(null);
-                    setDialogVisible(false);
-                }}
-                onConfirm={handleConfirmDelete}
-            >
-                <Text key={player.name}>
-                    Are you sure you want to delete
-                    <Text style={styles.alertMessage}>
-                        {player.name}
-                    </Text>?
-                </Text>
             </Dialog>
         );
     };
@@ -183,6 +231,18 @@ export function PlayersList() {
                                 <Text style={styles.placeText}>{team.place}</Text>
                             </TouchableOpacity>
                             <View style={styles.teamHeaderInner}>
+                                <TouchableOpacity onPress={handleAddNewPlayer}>
+                                    <View>
+                                        <Icon
+                                            key={team._id}
+                                            style={styles.icontrash}
+                                            name="add-outline"
+                                            size={25}
+                                            color='black'
+
+                                        />
+                                    </View>
+                                </TouchableOpacity>
                                 <TouchableOpacity onPress={() => handleDelete(teamIndex)}>
                                     <View>
                                         <Icon
@@ -190,7 +250,7 @@ export function PlayersList() {
                                             style={styles.icontrash}
                                             name="trash"
                                             size={20}
-                                            color='#ef4444'
+                                            color='black'
 
                                         />
                                     </View>
@@ -223,7 +283,7 @@ export function PlayersList() {
                                     <TouchableOpacity onPress={() => handleEdit(team._id)}>
                                         <Icon style={styles.iconarrow} key={team._id} name="pencil" size={20} />
                                     </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => handleDeletePlayer(player.name)}>
+                                    <TouchableOpacity key={player.name} onPress={() => handleDeletePlayer(team._id, player.name)}>
                                         <Icon
                                             key={player.name}
                                             style={styles.iconarrow}
@@ -258,6 +318,7 @@ export function PlayersList() {
                 >
                     {renderHeading()}
                     {renderDialog()}
+                    {playerToDelete && renderPlayerDialog(playerToDelete.player[0])}
                     {renderPlayers()}
                 </ImageBackground>
             </View>
@@ -294,7 +355,8 @@ const styles = StyleSheet.create({
         borderStyle: 'solid',
         borderRadius: 8,
         marginTop: 10,
-        marginBottom: 4
+        marginBottom: 4,
+        backgroundColor:'rgba(213, 144, 45, 0.5)'
     },
     placeText: {
         padding: 6,
@@ -302,14 +364,15 @@ const styles = StyleSheet.create({
         borderColor: 'black',
         borderStyle: 'solid',
         borderRadius: 8,
+        fontWeight: '600',
     },
     teamHeaderInner: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     icontrash: {
-        color: '#fd9317',
+        color: 'black',
         marginRight: 20
     },
     button: {
