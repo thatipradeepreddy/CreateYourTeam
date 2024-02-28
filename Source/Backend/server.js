@@ -64,7 +64,7 @@ app.use('/reset-password', router);
 
 app.post('/user/login', async (request, response) => {
   const { email, password } = request.body;
-  console.log(request.body, 'vinay');
+  console.log(request.body, 'pradeep');
   loginUser(email, password, response);
 });
 
