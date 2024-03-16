@@ -1,39 +1,31 @@
-import { CricketersData } from "../Connections/database.js";
+import { CricketersData } from '../Connections/database.js'
 
+export const addNewPlayer = async (request, response) => {
+	const newPlayer = {
+		name: request.body.name,
+		age: request.body.age,
+		nation: request.body.nation,
+		ranking: request.body.ranking,
+		premierLeague: request.body.premierLeague,
+		image: request.body.image,
+		wikipediaUrl: request.body.wikipediaUrl,
+	}
 
-export function addNewPlayer(req, res) {
-    const { _id, place } = req.params;
-    const { name, age, nation, ranking, premierLeague, image, wikipediaUrl } = req.body;
+	const query = {
+		_id: request.params.id,
+		place: request.body.place,
+	}
 
-    CricketersData.findById(_id).then(cricketer => {
-        if (!cricketer) {
-            return res.status(404).json({ message: "Cricketer not found" });
-        }
-
-        if (cricketer.place !== place) {
-            return res.status(400).json({ message: "Invalid place for the cricketer" });
-        }
-
-        const newPlayer = {
-            name,
-            age,
-            nation,
-            ranking,
-            premierLeague,
-            image,
-            wikipediaUrl,
-        };
-
-        cricketer.players.push(newPlayer);
-
-        cricketer.save().then(savedCricketer => {
-            res.status(201).json({ message: "Player added successfully", cricketer: savedCricketer });
-        }).catch(error => {
-            console.error("Error saving cricketer:", error);
-            res.status(500).json({ message: "Server error" });
-        });
-    }).catch(error => {
-        console.error("Error finding cricketer:", error);
-        res.status(500).json({ message: "Server error" });
-    });
+	CricketersData.findOneAndUpdate(
+		query,
+		{ $push: { player: newPlayer } },
+		{ new: true },
+		(err, data) => {
+			if (!err) {
+				response.status(200).json(data)
+			} else {
+				console.log(err)
+			}
+		}
+	)
 }

@@ -38,6 +38,8 @@ app.get("/", getAllData);
 
 app.put("/:id", updateData)
 
+app.put("/addnewPlayer/:id", updateData)
+
 app.delete("/:id", deleteData);
 
 app.delete("/:id/:name", deletePlayerByName);
@@ -46,7 +48,7 @@ app.put("/editplayerbyname/:id/:name", updatePlayerByIdAndName);
 
 app.get("/getplayerbyname/:id/:name", getPlayerByIdAndName);
 
-app.delete("/addNewPlayer/:id/:place", addNewPlayer);
+app.post("/addNewPlayer/:id/:place", addNewPlayer);
 
 //For User Registration
 
@@ -64,7 +66,7 @@ app.use('/reset-password', router);
 
 app.post('/user/login', async (request, response) => {
   const { email, password } = request.body;
-  console.log(request.body, 'pradeep');
+  console.log(request.body, 'vinay');
   loginUser(email, password, response);
 });
 

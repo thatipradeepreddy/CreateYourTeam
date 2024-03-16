@@ -1,11 +1,11 @@
-import { CricketersData } from '../Connections/database.js';
+import { CricketersData } from '../Connections/database.js'
 
 export const deleteData = async (request, response) => {
-  try {
-    await CricketersData.deleteOne({ _id: request.params.id });
+	try {
+		await CricketersData.deleteOne({ _id: request.params.id })
 
-    response.status(201).json("Cricketer deleted");
-  } catch (error) {
-    response.status(409).json({ message: error.message });
-  }
-};
+		response.status(201).json('Cricketer deleted')
+	} catch (error) {
+		response.status(409).json({ message: error.message })
+	}
+}
