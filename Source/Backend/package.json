@@ -23,7 +23,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^4.4.1",
     "mongoose": "^6.12.9",
-    "nodemailer": "^6.9.13"
+    "nodemailer": "^6.9.13",
+    "prettier": "^3.3.2"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

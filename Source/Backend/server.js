@@ -1,78 +1,49 @@
+import express from 'express'
+import bodyParser from 'body-parser'
+import cors from 'cors'
+import { createData } from './DataHandlers/create.js'
+import { getDataById } from './DataHandlers/get.js'
+import { getAllData } from './DataHandlers/getall.js'
+import updateData from './DataHandlers/update.js'
+import { deleteData } from './DataHandlers/delete.js'
+import { deletePlayerByName } from './DataHandlers/deleteplayerbyname.js'
+import { addNewPlayer } from './DataHandlers/addnewplayer.js'
+import { updatePlayerByIdAndName } from './DataHandlers/editPlayerByName.js'
+import { getPlayerByIdAndName } from './DataHandlers/getPlayerByName.js'
+import userRouter from './UserHandlers/user.js'
 
-import express from "express";
-import bodyParser from "body-parser";
-import cors from "cors";
-import { createData } from "./DataHandlers/create.js";
-import { getDataById } from "./DataHandlers/get.js";
-import { getAllData } from "./DataHandlers/getall.js";
-import updateData from "./DataHandlers/update.js";
-import { deleteData } from "./DataHandlers/delete.js";
+const app = express()
 
-import {createUserData} from "./SingUpHandlers/createuser.js";
-import { getUserById } from "./SingUpHandlers/getsingup.js";
-import { getAllUsersData } from "./SingUpHandlers/getallsignup.js";
-import updateUserData from "./SingUpHandlers/updatesingup.js";
-import { deleteUser } from "./SingUpHandlers/deleteuser.js";
-import { loginUser } from "./SingUpHandlers/login.js";
-import { deletePlayerByName } from "./DataHandlers/deleteplayerbyname.js";
-import { addNewPlayer } from "./DataHandlers/addnewplayer.js";
-import { updatePlayerByIdAndName } from "./DataHandlers/editPlayerByName.js";
-import { getPlayerByIdAndName } from "./DataHandlers/getPlayerByName.js";
-import router from "./SingUpHandlers/forgot.js";
-
-const app = express();
 app.use(
-  cors({
-    origin: "*",
-  })
-);
+	cors({
+		origin: '*',
+	})
+)
 
-app.use(express.json())
+app.use(bodyParser.json())
 
-app.use('./auth', createUserData)
+app.use('/user', userRouter)
 
-app.use(bodyParser.json());
+app.post('/createdata', createData)
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.get('/:id', getDataById)
 
-app.post("/createdata", createData);
+app.get('/', getAllData)
 
-app.get("/:id", getDataById);
+app.put('/:id', updateData)
 
-app.get("/", getAllData);
+app.put('/addnewPlayer/:id', updateData)
 
-app.put("/:id", updateData)
+app.delete('/:id', deleteData)
 
-app.put("/addnewPlayer/:id", updateData)
+app.delete('/:id/:name', deletePlayerByName)
 
-app.delete("/:id", deleteData);
+app.put('/editplayerbyname/:id/:name', updatePlayerByIdAndName)
 
-app.delete("/:id/:name", deletePlayerByName);
+app.get('/getplayerbyname/:id/:name', getPlayerByIdAndName)
 
-app.put("/editplayerbyname/:id/:name", updatePlayerByIdAndName);
-
-app.get("/getplayerbyname/:id/:name", getPlayerByIdAndName);
-
-app.post("/addNewPlayer/:id/:place", addNewPlayer);
-
-//For User Registration
-
-
-app.get("/user/:id", getUserById);
-
-app.get("/user/", getAllUsersData);
-
-app.put("/user/:id", updateUserData)
-
-app.delete("/user/:id", deleteUser);
-
-app.use('/reset-password', router);
-
-app.post('/user/login', async (request, response) => {
-  const { email, password } = request.body;
-  loginUser(email, password, response);
-});
+app.post('/addNewPlayer/:id/:place', addNewPlayer)
 
 app.listen(5000, () => {
-  console.log("server started and listnening to the port 5000");
-});
+	console.log('server started and listnening to the port 5000')
+})

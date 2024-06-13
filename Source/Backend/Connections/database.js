@@ -1,18 +1,23 @@
+import { CricketersSchema, UserSchema } from './datatypes.js'
 import mongoose from 'mongoose'
+import dotenv from 'dotenv'
 
-import { CricketersSchema, LoginSchema, SignUpSchema } from './datatypes.js'
+dotenv.config()
 
-mongoose.connect(
-	'mongodb+srv://bablureddy47:7aksMw5qRF2HkwFt@cluster0.ekjvktq.mongodb.net/?retryWrites=true&w=majority',
-	() => {
-		console.log('DB connected')
-	}
-)
+mongoose
+	.connect(process.env.MONGODB_URI, {
+		useNewUrlParser: true,
+		useUnifiedTopology: true,
+	})
+	.then(() => {
+		console.log('DB Connected')
+	})
+	.catch((err) => {
+		console.error('Connection error:', err.message)
+	})
 
 const CricketersData = mongoose.model('tournamets', CricketersSchema)
 
-const SignUpData = mongoose.model('User', SignUpSchema)
+const User = mongoose.model('User', UserSchema)
 
-const LoginData = mongoose.model('Loginuser', LoginSchema)
-
-export { CricketersData, SignUpData, LoginData }
+export { CricketersData, User }
