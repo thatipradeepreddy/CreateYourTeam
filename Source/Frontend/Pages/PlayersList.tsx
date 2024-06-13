@@ -120,10 +120,6 @@ export function PlayersList() {
 		)
 	}
 
-	const renderSuccessMessage = () => {
-		return <View></View>
-	}
-
 	const renderPlayerDialog = (player: Player) => {
 		if (!player.name) {
 			return null
@@ -290,7 +286,9 @@ export function PlayersList() {
 							</TouchableOpacity>
 							<View style={styles.teamHeaderInner}>
 								<TouchableOpacity
-									onPress={() => handleNavigateToMaps(team._id)}
+									onPress={() =>
+										handleNavigateToMaps(team._id)
+									}
 								>
 									<View>
 										<Icon
@@ -480,7 +478,7 @@ const styles = StyleSheet.create({
 		borderStyle: 'solid',
 		borderRadius: 8,
 		fontWeight: '600',
-		maxWidth: 140
+		maxWidth: 140,
 	},
 	teamHeaderInner: {
 		flexDirection: 'row',
@@ -517,6 +515,7 @@ const styles = StyleSheet.create({
 		height: 100,
 		marginRight: 10,
 		borderRadius: 5,
+		resizeMode: 'contain',
 	},
 	playerContainer: {
 		height: '100%',

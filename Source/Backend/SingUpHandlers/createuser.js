@@ -1,28 +1,32 @@
-import { SignUpData } from '../Connections/database.js'
+import { SignUpData } from '../Connections/database.js';
+import bcrypt from 'bcrypt';
+import express from 'express';
 
-function createUserData(request, response) {
-	const { username, email, password } = request.body
+const createUserData = express.Router();
 
-	const signupDetails = {
-		username,
-		email,
-		password,
-	}
+createUserData.post('/signup', async (req, res) => {
+    try {
+        const { username, email, password } = req.body;
 
-	const CreateSignupData = new SignUpData(signupDetails)
+        const user = await SignUpData.findOne({ email });
+        if (user) {
+            return res.status(400).json({ message: "User already registered" });
+        }
 
-	CreateSignupData.save()
-		.then(() => {
-			console.log('Registered user successfully')
-			response.send({
-				msg: 'User registered successfully',
-				status_code: 200,
-			})
-		})
-		.catch((err) => {
-			console.error('Schema validation error:', err.errors)
-			response.send({ err_msg: 'Unable to add user' })
-		})
-}
+        const hashPassword = await bcrypt.hash(password, 10);
 
-export { createUserData }
+        const newUser = new SignUpData({
+            username,
+            email,
+            password: hashPassword
+        });
+
+        await newUser.save();
+        return res.status(201).json({ message: "Record registered" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Server error" });
+    }
+});
+
+export { createUserData };

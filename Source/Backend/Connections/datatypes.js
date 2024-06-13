@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 
 const PlayerSchema = mongoose.Schema({
-	name: { type: String, required: true, unique: true },
+	name: { type: String, required: true},
 	age: { type: String, required: true },
 	nation: { type: String, required: true },
 	ranking: { type: String, required: true },
@@ -11,18 +11,18 @@ const PlayerSchema = mongoose.Schema({
 })
 
 const CricketersSchema = mongoose.Schema({
-	place: { type: String, required: true, unique: true },
+	place: { type: String, required: true},
 	player: [PlayerSchema],
 })
 
-const SignUpSchema = mongoose.Schema({
-	username: { type: String, required: true, unique: true },
-	email: { type: String, required: true, unique: true },
+const SignUpSchema = new mongoose.Schema({
+	username: { type: String, required: true, unique: true},
+	email: { type: String, required: true, unique: true},
 	password: { type: String, required: true },
 })
 
 const LoginSchema = mongoose.Schema({
-	email: { type: String, required: true, unique: true },
+	email: { type: String, required: true},
 	password: { type: String, required: true },
 })
 

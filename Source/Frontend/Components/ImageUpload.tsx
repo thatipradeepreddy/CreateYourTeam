@@ -1,78 +1,114 @@
-import React, { useState, useEffect } from 'react'
-import { View, Button, Image, Alert } from 'react-native'
-import ImagePicker, { ImagePickerResponse } from 'react-native-image-picker'
+import React, { useState } from 'react'
+import { Button, Image, View, Text, StyleSheet } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import Icon from 'react-native-vector-icons/Ionicons'
+import {
+	launchCamera,
+	launchImageLibrary,
+	ImagePickerResponse,
+	ImageLibraryOptions,
+	MediaType,
+} from 'react-native-image-picker'
 
-export function ImageUpload() {
+interface ImageUploadProps {
+	onImageSelect: (imageUri: string) => void
+}
+
+export function ImageUpload(props: ImageUploadProps) {
 	const [imageUri, setImageUri] = useState<string | null>(null)
 
-	useEffect(() => {
-		return () => {
-			cleanup()
-		}
-	}, [])
-
-	const cleanup = () => {}
-
-	const openCamera = () => {
-		const options: ImagePicker.CameraOptions = {
-			mediaType: 'photo',
-			maxWidth: 800,
-			maxHeight: 600,
-			quality: 1,
+	const handleLaunchCamera = () => {
+		const options: ImageLibraryOptions = {
+			mediaType: 'photo' as MediaType,
+			quality: 0.5,
 		}
 
-		ImagePicker.launchCamera(options, (response) => {
-			handleImagePickerResponse(response)
+		launchCamera(options, (response: ImagePickerResponse) => {
+			if (
+				!response.didCancel &&
+				response.assets &&
+				response.assets[0].uri
+			) {
+				setImageUri(response.assets[0].uri)
+				props.onImageSelect(response.assets[0].uri)
+			}
 		})
 	}
 
-	const selectImage = () => {
-		const options: ImagePicker.CameraOptions = {
-			mediaType: 'photo',
-			maxWidth: 800,
-			maxHeight: 600,
-			quality: 1,
+	const handleLaunchImageLibrary = () => {
+		const options: ImageLibraryOptions = {
+			mediaType: 'photo' as MediaType,
+			quality: 0.5,
 		}
 
-		ImagePicker.launchImageLibrary(options, (response) => {
-			handleImagePickerResponse(response)
+		launchImageLibrary(options, (response: ImagePickerResponse) => {
+			if (
+				!response.didCancel &&
+				response.assets &&
+				response.assets[0].uri
+			) {
+				setImageUri(response.assets[0].uri)
+				props.onImageSelect(response.assets[0].uri)
+			}
 		})
-	}
-
-	const handleImagePickerResponse = (
-		response: ImagePickerResponse | undefined
-	) => {
-		if (!response) {
-			console.log('No response from image picker')
-			return
-		}
-
-		if (response.didCancel) {
-			console.log('User cancelled image picker')
-		} else if (response.errorMessage) {
-			console.log('ImagePicker Error: ', response.errorMessage)
-			Alert.alert('Error', 'Could not pick image. Please try again.')
-		} else if (response.assets && response.assets.length > 0) {
-			const uri = response.assets[0].uri as string
-			setImageUri(uri)
-		} else {
-			console.log('No image URI found in response')
-			Alert.alert('Error', 'Could not pick image. Please try again.')
-		}
 	}
 
 	return (
-		<View
-			style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-		>
+		<View>
 			{imageUri && (
-				<Image
-					source={{ uri: imageUri }}
-					style={{ width: 200, height: 200 }}
-				/>
+				<View style={{ width: 200, height: 150 }}>
+					<Image source={{ uri: imageUri }} style={styles.image} />
+				</View>
 			)}
-			<Button title='Open Camera' onPress={openCamera} />
-			<Button title='Select Image' onPress={selectImage} />
+			<View style={styles.buttons && styles.border}>
+				<TouchableOpacity
+					style={styles.buttons}
+					onPress={handleLaunchCamera}
+				>
+					<Text>Capture</Text>
+					<Icon
+						name={'camera-sharp'}
+						size={32}
+						color='#487790'
+						style={{ marginLeft: 5 }}
+					/>
+				</TouchableOpacity>
+				<TouchableOpacity
+					style={styles.buttons}
+					onPress={handleLaunchImageLibrary}
+				>
+					<Text>Upload</Text>
+					<Icon
+						name={'cloud-upload-sharp'}
+						size={32}
+						color='#487790'
+						style={{ marginLeft: 5 }}
+					/>
+				</TouchableOpacity>
+			</View>
 		</View>
 	)
 }
+
+const styles = StyleSheet.create({
+	image: {
+		width: '100%',
+		height: '100%',
+		resizeMode: 'contain',
+		marginLeft: '30%',
+	},
+	buttons: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-around',
+	},
+	border: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-around',
+		borderColor: '#487790',
+		borderWidth: 1,
+		height: 45,
+		borderRadius: 10,
+	},
+})

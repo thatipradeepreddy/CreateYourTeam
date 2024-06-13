@@ -9,9 +9,9 @@ mongoose.connect(
 	}
 )
 
-const CricketersData = mongoose.model('tournamet', CricketersSchema)
+const CricketersData = mongoose.model('tournamets', CricketersSchema)
 
-const SignUpData = mongoose.model('registeruser', SignUpSchema)
+const SignUpData = mongoose.model('User', SignUpSchema)
 
 const LoginData = mongoose.model('Loginuser', LoginSchema)
 

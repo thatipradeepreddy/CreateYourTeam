@@ -7,17 +7,18 @@ import { getDataById } from "./DataHandlers/get.js";
 import { getAllData } from "./DataHandlers/getall.js";
 import updateData from "./DataHandlers/update.js";
 import { deleteData } from "./DataHandlers/delete.js";
-import { createUserData } from "./SingUpHandlers/createuser.js";
+
+import {createUserData} from "./SingUpHandlers/createuser.js";
 import { getUserById } from "./SingUpHandlers/getsingup.js";
 import { getAllUsersData } from "./SingUpHandlers/getallsignup.js";
 import updateUserData from "./SingUpHandlers/updatesingup.js";
 import { deleteUser } from "./SingUpHandlers/deleteuser.js";
-import router from "./SingUpHandlers/forgot.js";
 import { loginUser } from "./SingUpHandlers/login.js";
 import { deletePlayerByName } from "./DataHandlers/deleteplayerbyname.js";
 import { addNewPlayer } from "./DataHandlers/addnewplayer.js";
 import { updatePlayerByIdAndName } from "./DataHandlers/editPlayerByName.js";
 import { getPlayerByIdAndName } from "./DataHandlers/getPlayerByName.js";
+import router from "./SingUpHandlers/forgot.js";
 
 const app = express();
 app.use(
@@ -25,6 +26,10 @@ app.use(
     origin: "*",
   })
 );
+
+app.use(express.json())
+
+app.use('./auth', createUserData)
 
 app.use(bodyParser.json());
 
@@ -52,7 +57,6 @@ app.post("/addNewPlayer/:id/:place", addNewPlayer);
 
 //For User Registration
 
-app.post("/createuser", createUserData);
 
 app.get("/user/:id", getUserById);
 
@@ -66,7 +70,6 @@ app.use('/reset-password', router);
 
 app.post('/user/login', async (request, response) => {
   const { email, password } = request.body;
-  console.log(request.body, 'vinay');
   loginUser(email, password, response);
 });
 

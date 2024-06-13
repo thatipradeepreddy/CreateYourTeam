@@ -11,7 +11,7 @@ import {
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { loginUser } from '../Controls/common.control'
+import { UserProps, loginUser } from '../Controls/common.control'
 import { NavigationProps } from './Routes'
 
 interface LoginRoutes {
@@ -31,23 +31,23 @@ export function Login() {
 
 	const handleLoginPress = () => {
 		// const user: UserProps = {
-		//     email: enteredUsernameOrEmail,
-		//     password: enteredPassword
-		// };
+		// 	email: enteredUsernameOrEmail,
+		// 	password: enteredPassword,
+		// 	username: ''
+		// }
 
 		// loginUser(JSON.stringify(user))
-		//     .then((response) => {
-		//         console.log(response, 'sdjfhksdjf')
-		//         if (response) {
-		navigation.navigate('addplayer')
-		//     } else {
-		//         console.error("Login failed:", response);
-		//     }
-
-		// })
-		// .catch((error) => {
-		//     console.error("Error during login:", error);
-		// });
+		// 	.then((response) => {
+		// 		console.log(response, 'sdjfhksdjf')
+		// 		if (response) {
+					navigation.navigate('addplayer')
+			// 	} else {
+			// 		console.error('Login failed:', response)
+			// 	}
+			// })
+			// .catch((error) => {
+			// 	console.error('Error during login:', error)
+			// })
 	}
 
 	const handleRegister = () => {
@@ -139,11 +139,13 @@ export function Login() {
 							contentContainerStyle={styles.scrollable}
 						>
 							<View style={styles.innerView}>
-								{renderHeading()}
-								{renderUserName()}
-								{renderPassword()}
-								{renderButton()}
-								{renderFooter()}
+								<View style={styles.nested}>
+									{renderHeading()}
+									{renderUserName()}
+									{renderPassword()}
+									{renderButton()}
+									{renderFooter()}
+								</View>
 							</View>
 						</ScrollView>
 					</ImageBackground>
@@ -156,7 +158,7 @@ export function Login() {
 
 const styles = StyleSheet.create({
 	input: {
-		height: 40,
+		height: 45,
 		borderColor: 'gray',
 		borderWidth: 1,
 		paddingHorizontal: 10,
@@ -181,6 +183,13 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		padding: 20,
+	},
+	nested: {
+		borderColor: 'white',
+		borderWidth: 1,
+		borderRadius: 10,
+		padding: 20,
+		backgroundColor: 'white',
 	},
 	close: {
 		justifyContent: 'center',
@@ -212,8 +221,8 @@ const styles = StyleSheet.create({
 		marginTop: 20,
 	},
 	linkText: {
-		color: 'blue',
 		textDecorationLine: 'underline',
+		color: 'black',
 	},
 	backImageContainer: {
 		flex: 1,

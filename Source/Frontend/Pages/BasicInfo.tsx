@@ -16,7 +16,6 @@ import {
 	updatePlayer,
 } from '../Controls/common.control'
 import { NavigationProps } from './Routes'
-import ImagePicker from 'react-native-image-picker'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { ImageUpload } from '../Components/ImageUpload'
 
@@ -115,6 +114,12 @@ export function BasicInfo() {
 		setPlayerState({ ...playerState, player: updatedPlayers })
 	}
 
+	const handleImageSelect = (imageUri: string) => {
+		const updatedPlayerState = { ...playerState }
+		updatedPlayerState.player[0].image = imageUri
+		setPlayerState(updatedPlayerState)
+	}
+
 	const renderStatus = () => {
 		if (statusMessage) {
 			return (
@@ -179,6 +184,10 @@ export function BasicInfo() {
 		}
 	}
 
+	const handleGoBack = () => {
+		navigation.goBack()
+	}
+
 	const renderHeader = () => {
 		let headerText = ''
 		switch (editPlayer) {
@@ -197,7 +206,16 @@ export function BasicInfo() {
 		}
 
 		return (
-			<View>
+			<View
+				style={{
+					flexDirection: 'row',
+					alignItems: 'center',
+					marginHorizontal: 22,
+				}}
+			>
+				<TouchableOpacity onPress={handleGoBack}>
+					<Icon name={'arrow-back'} size={32} color='#487790' />
+				</TouchableOpacity>
 				<Text style={styles.heading}>{headerText}</Text>
 			</View>
 		)
@@ -206,7 +224,7 @@ export function BasicInfo() {
 	const renderContent = () => (
 		<View style={styles.content}>
 			<View style={styles.inputsContainer}>
-				<Text>Place</Text>
+				<Text style={{ color: '#487790' }}>Place</Text>
 				<TextInput
 					style={styles.inputHeading}
 					onChangeText={(text) =>
@@ -293,15 +311,7 @@ export function BasicInfo() {
 						/>
 
 						<Text style={styles.inputHeadings}>Image</Text>
-						<TextInput
-							style={styles.input}
-							onChangeText={(text) =>
-								handleChangePlayerData(index, 'image', text)
-							}
-							placeholder='Enter Image Url'
-							value={player.image}
-							placeholderTextColor={'black'}
-						/>
+						<ImageUpload onImageSelect={handleImageSelect} />
 
 						<Text style={styles.inputHeadings}>Wikipedia Url</Text>
 						<TextInput
@@ -329,7 +339,8 @@ export function BasicInfo() {
 		}
 		return (
 			<View style={styles.main}>
-				<ImageBackground source={image} style={styles.backgroundImage}>
+				{/* <ImageBackground source={image} style={styles.backgroundImage}> */}
+				<View style={styles.backgroundImage}>
 					{renderHeader()}
 					<ScrollView contentContainerStyle={styles.scrollable}>
 						{renderContent()}
@@ -370,7 +381,8 @@ export function BasicInfo() {
 						</TouchableOpacity>
 						{renderStatus()}
 					</View>
-				</ImageBackground>
+				</View>
+				{/* </ImageBackground> */}
 			</View>
 		)
 	}
@@ -388,7 +400,7 @@ const styles = StyleSheet.create({
 		display: 'flex',
 		flexDirection: 'row',
 		alignItems: 'center',
-		backgroundColor: 'rgba(228, 168, 214, 0.3)',
+		backgroundColor: 'rgba(228, 168, 214, 0.1)',
 		borderColor: 'black',
 		borderWidth: 1.5,
 		borderTopLeftRadius: 7.9,
@@ -400,6 +412,7 @@ const styles = StyleSheet.create({
 	},
 	count: {
 		fontSize: 16,
+		color: 'black',
 	},
 	playerStyle: {
 		borderWidth: 1,
@@ -407,21 +420,24 @@ const styles = StyleSheet.create({
 		borderColor: 'black',
 		borderRadius: 10,
 		marginTop: 10,
-		backgroundColor: 'rgba(124, 189, 181, 0.3)',
+		backgroundColor: 'rgba(124, 189, 181, 0.1)',
 	},
 	doneoutline: {},
 	inputHeadings: {
 		marginTop: 10,
 		marginLeft: 4,
+		color: '#487790',
+		fontWeight: '400',
 	},
 	input: {
-		height: 40,
+		height: 45,
 		borderColor: '#878b95',
 		borderWidth: 1.5,
-		paddingHorizontal: 10,
+		paddingHorizontal: 6,
 		borderRadius: 8,
-		backgroundColor: 'rgba(124, 189, 181, 0.4)',
-		fontWeight: '800',
+		// backgroundColor: 'rgba(124, 189, 181, 1)',
+		fontWeight: '400',
+		color: '',
 	},
 	inputHeading: {
 		height: 40,
@@ -431,8 +447,8 @@ const styles = StyleSheet.create({
 		borderRadius: 8,
 		textAlign: 'center',
 		fontWeight: '900',
-		backgroundColor: 'rgba(213, 144, 45, 0.6)',
-		letterSpacing: 5,
+		backgroundColor: 'rgba(213, 144, 45, 0.2)',
+		letterSpacing: 2,
 	},
 	main: {
 		flex: 1,
@@ -451,10 +467,12 @@ const styles = StyleSheet.create({
 
 	heading: {
 		fontSize: 28,
-		marginTop: 30,
+		marginTop: 15,
 		textAlign: 'center',
 		marginBottom: 15,
 		fontWeight: '600',
+		color: '#487790',
+		marginLeft: '20%',
 	},
 
 	scrollable: {
@@ -471,6 +489,7 @@ const styles = StyleSheet.create({
 		resizeMode: 'cover',
 		width: '100%',
 		height: '100%',
+		backgroundColor: '#d4e2ea',
 	},
 	closeButton: {
 		padding: 10,
