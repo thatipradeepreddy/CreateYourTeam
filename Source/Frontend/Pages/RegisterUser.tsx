@@ -19,7 +19,7 @@ export function RegisterUser() {
 	const navigation = useNavigation<NavigationProps['navigation']>()
 	const [dialogVisible, setDialogVisible] = useState(false)
 	const [user, setUser] = useState<UserProps>({
-		username: '',
+		name: '',
 		email: '',
 		password: '',
 	})
@@ -27,10 +27,10 @@ export function RegisterUser() {
 	const handleConfirmSubmit = () => {
 		createUser(user)
 			.then((data: any) => {
-				console.log('User data posted successfully:', data)
+				console.log(data)
 			})
 			.catch((error: any) => {
-				console.error('Error posting user data:', error)
+				console.error(error)
 			})
 
 		navigation.navigate('login')
@@ -50,9 +50,9 @@ export function RegisterUser() {
 
 	const renderDialogContent = () => {
 		return (
-			<Text key={user.username}>
+			<Text key={user.name}>
 				Are you sure you want to register:
-				<Text style={styles.alertMessage}>"{user.username}"</Text>?
+				<Text style={styles.alertMessage}>"{user.name}"</Text>?
 			</Text>
 		)
 	}
@@ -77,10 +77,8 @@ export function RegisterUser() {
 				<Text>User Name</Text>
 				<TextInput
 					style={styles.input}
-					onChangeText={(text) =>
-						setUser({ ...user, username: text })
-					}
-					value={user.username}
+					onChangeText={(text) => setUser({ ...user, name: text })}
+					value={user.name}
 					placeholder='Enter User Name'
 				/>
 
@@ -125,23 +123,23 @@ export function RegisterUser() {
 		return (
 			<View style={styles.main}>
 				<View style={styles.backImageContainer}>
-					<ImageBackground
+					{/* <ImageBackground
 						source={image}
 						style={styles.backgroundImage}
+					> */}
+					<ScrollView
+						showsVerticalScrollIndicator={false}
+						showsHorizontalScrollIndicator={false}
+						contentContainerStyle={styles.scrollable}
 					>
-						<ScrollView
-							showsVerticalScrollIndicator={false}
-							showsHorizontalScrollIndicator={false}
-							contentContainerStyle={styles.scrollable}
-						>
-							<View style={styles.innerView}>
-								{renderHeading()}
-								{renderDetails()}
-								{renderButton()}
-								{renderDialog()}
-							</View>
-						</ScrollView>
-					</ImageBackground>
+						<View style={styles.innerView}>
+							{renderHeading()}
+							{renderDetails()}
+							{renderButton()}
+							{renderDialog()}
+						</View>
+					</ScrollView>
+					{/* </ImageBackground> */}
 				</View>
 			</View>
 		)
@@ -197,6 +195,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		width: '100%',
 		height: '100%',
+		backgroundColor: 'white',
 	},
 	backgroundImage: {
 		flex: 1,

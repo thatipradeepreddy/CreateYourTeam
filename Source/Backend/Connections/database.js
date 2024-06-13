@@ -18,6 +18,6 @@ mongoose
 
 const CricketersData = mongoose.model('tournamets', CricketersSchema)
 
-const User = mongoose.model('User', UserSchema)
+const User = mongoose.model('registerlogin', UserSchema)
 
 export { CricketersData, User }
