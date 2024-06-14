@@ -22,7 +22,7 @@ mongoose
 
 const CricketersData = mongoose.model('tournamets', CricketersSchema)
 
-const User = mongoose.model('registerlogin', UserSchema)
+const User = mongoose.model('zetabyte', UserSchema)
 
 const UserVerification = mongoose.model(
 	'userverification',
