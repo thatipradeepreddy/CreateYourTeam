@@ -5,6 +5,10 @@ import dotenv from 'dotenv'
 import nodemailer from 'nodemailer'
 import { v4 as uuidv4 } from 'uuid'
 import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 dotenv.config()
 
@@ -114,7 +118,7 @@ const sendVerificationEmail = ({ _id, email }, res) => {
 		subject: 'Verify Your Email!',
 		html: `<p>Verify your email address to complete the signup process.</p>
            <p>This link <b>expires in 6 hours</b>.</p>
-           <p>Press <a href="${currentUrl}user/verify/${_id}/${uniqueString}">here</a> to verify your email.</p>`,
+           <p>Please click <a href="${currentUrl}user/verify/${_id}/${uniqueString}">here</a> to verify your email.</p>`,
 	}
 	const saltRounds = 10
 	bcrypt
@@ -210,9 +214,9 @@ router.get('/verify/:userId/:uniqueString', (req, res) => {
 												res.sendFile(
 													path.join(
 														__dirname,
-														'verified.html'
+														'./verified.html'
 													)
-												) // Make sure you have this file
+												)
 											})
 											.catch((error) => {
 												console.log(error)
@@ -252,7 +256,7 @@ router.get('/verify/:userId/:uniqueString', (req, res) => {
 })
 
 router.get('/verified', (req, res) => {
-	res.sendFile(path.join(__dirname, 'verified.html')) // Ensure this path is correct and the file exists
+	res.sendFile(path.join(__dirname, './verified.html')) // Ensure this path is correct and the file exists
 })
 
 router.post('/signin', (req, res) => {

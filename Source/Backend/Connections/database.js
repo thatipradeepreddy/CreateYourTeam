@@ -22,10 +22,10 @@ mongoose
 
 const CricketersData = mongoose.model('tournamets', CricketersSchema)
 
-const User = mongoose.model('zetabyte', UserSchema)
+const User = mongoose.model('speed', UserSchema)
 
 const UserVerification = mongoose.model(
-	'userverification',
+	'slow',
 	UserVerificationSchema
 )
 

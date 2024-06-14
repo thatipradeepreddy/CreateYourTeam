@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Status</title>
+</head>
+
+<body>
+    <h1>Verification Status</h1>
+    <div id="message"></div>
+
+    <script>
+        // Display the message passed through the query string
+        const params = new URLSearchParams(window.location.search);
+        const error = params.get('error');
+        const message = params.get('message');
+        const messageDiv = document.getElementById('message');
+
+        if (message) {
+            const decodedMessage = decodeURIComponent(message.replace(/\+/g, ' '));
+            if (error === 'true') {
+                messageDiv.innerHTML = `<p style="color: red;">${decodedMessage}</p>`;
+            } else {
+                messageDiv.innerHTML = `<p style="color: green;">${decodedMessage}</p>`;
+            }
+        } else {
+            messageDiv.innerHTML = `<p style="color: green;">Your email has been verified successfully!</p>`;
+        }
+    </script>
+</body>
+
+</html>
