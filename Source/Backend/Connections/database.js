@@ -1,4 +1,8 @@
-import { CricketersSchema, UserSchema } from './datatypes.js'
+import {
+	CricketersSchema,
+	UserSchema,
+	UserVerificationSchema,
+} from './datatypes.js'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 
@@ -20,4 +24,9 @@ const CricketersData = mongoose.model('tournamets', CricketersSchema)
 
 const User = mongoose.model('registerlogin', UserSchema)
 
-export { CricketersData, User }
+const UserVerification = mongoose.model(
+	'userverification',
+	UserVerificationSchema
+)
+
+export { CricketersData, User, UserVerification }

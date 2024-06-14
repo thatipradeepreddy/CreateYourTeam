@@ -1,8 +1,29 @@
 import express from 'express'
 import { User } from '../Connections/database.js'
 import bcrypt from 'bcrypt'
+import dotenv from 'dotenv'
+import nodemailer from 'nodemailer'
+import { v4 as uuidv4 } from 'uuid'
+import { UserVerification } from '../Connections/database.js'
 
 const router = express.Router()
+
+let transporter = nodemailer.createTransport({
+	service: 'gmail',
+	auth: {
+		user: process.env.AUTH_EMAIL,
+		pass: process.env.AUTH_PASS,
+	},
+})
+
+transporter.verify((error, success) => {
+	if (error) {
+		console.log(error)
+	} else {
+		console.log('Ready for messages')
+		console.log(success)
+	}
+})
 
 router.post('/signup', (req, res) => {
 	let { name, email, password } = req.body

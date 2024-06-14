@@ -19,6 +19,14 @@ const UserSchema = new mongoose.Schema({
 	name: { type: String, required: true },
 	email: { type: String, required: true, unique: true },
 	password: { type: String, required: true },
+	verified: { type: Boolean },
 })
 
-export { CricketersSchema, UserSchema }
+const UserVerificationSchema = new mongoose.Schema({
+	userId: { type: String, required: true },
+	uniqueString: { type: String, required: true, unique: true },
+	createdAt: { type: Date, required: true },
+	expiresAt: { type: Date },
+})
+
+export { CricketersSchema, UserSchema, UserVerificationSchema }
