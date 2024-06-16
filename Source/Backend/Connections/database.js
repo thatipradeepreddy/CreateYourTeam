@@ -2,6 +2,7 @@ import {
 	CricketersSchema,
 	UserSchema,
 	UserVerificationSchema,
+	passwordResetSchema,
 } from './datatypes.js'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
@@ -22,11 +23,10 @@ mongoose
 
 const CricketersData = mongoose.model('tournamets', CricketersSchema)
 
-const User = mongoose.model('speed', UserSchema)
+const User = mongoose.model('kambalapally', UserSchema)
 
-const UserVerification = mongoose.model(
-	'slow',
-	UserVerificationSchema
-)
+const UserVerification = mongoose.model('chenukada', UserVerificationSchema)
 
-export { CricketersData, User, UserVerification }
+const PasswordReset = mongoose.model('passwordReset', passwordResetSchema)
+
+export { CricketersData, User, UserVerification, PasswordReset }

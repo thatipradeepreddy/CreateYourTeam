@@ -6,6 +6,7 @@ import nodemailer from 'nodemailer'
 import { v4 as uuidv4 } from 'uuid'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { PasswordReset } from '../Connections/database.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -110,7 +111,7 @@ router.post('/signup', (req, res) => {
 })
 
 const sendVerificationEmail = ({ _id, email }, res) => {
-	const currentUrl = 'http://192.168.68.69:5000/'
+	const currentUrl = 'http://192.168.100.19:5000/'
 	const uniqueString = uuidv4() + _id
 	const mailOptions = {
 		from: process.env.AUTH_EMAIL,

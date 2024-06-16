@@ -29,4 +29,16 @@ const UserVerificationSchema = new mongoose.Schema({
 	expiresAt: { type: Date },
 })
 
-export { CricketersSchema, UserSchema, UserVerificationSchema }
+const passwordResetSchema = new mongoose.Schema({
+	userId: { type: String, required: true },
+	resetString: { type: String, required: true, unique: true },
+	createdAt: { type: Date, required: true },
+	expiresAt: { type: Date },
+})
+
+export {
+	CricketersSchema,
+	UserSchema,
+	UserVerificationSchema,
+	passwordResetSchema,
+}
