@@ -352,7 +352,7 @@ router.post('/requestPasswordReset', (req, res) => {
 })
 
 const sendResetEmail = ({ _id, email }, redirectUrl, res) => {
-	const resetString = uuidv4 + _id
+	const resetString = uuidv4() + _id
 	PasswordReset.deleteMany({ userId: _id })
 		.then((result) => {
 			const mailOptions = {
@@ -361,7 +361,7 @@ const sendResetEmail = ({ _id, email }, redirectUrl, res) => {
 				subject: 'Password reset URL',
 				html: `<p>Now you can change your password with the below link</p>
            <p>This link <b>expires in 30 minutes</b>.</p>
-           <p>Please click <a href="${redirectUrl + '/' + _id + resetString}">here</a> to verify your email.</p>`,
+           <p>Please click <a href="${redirectUrl + '/' + _id + '/' + resetString}">here</a> to reset your password.</p>`,
 			}
 
 			const saltRounds = 10
@@ -418,5 +418,112 @@ const sendResetEmail = ({ _id, email }, redirectUrl, res) => {
 			})
 		})
 }
+
+router.post('/resetPassword', (req, res) => {
+	let { userId, resetString, newPassword } = req.body
+	PasswordReset.find({ userId })
+		.then((result) => {
+			if (result.length > 0) {
+				const { expiresAt } = result[0]
+				const hashedResetString = result[0].resetString
+
+				if (expiresAt < Date.now()) {
+					PasswordReset.deleteOne({ userId })
+						.then(() => {
+							res.json({
+								status: 'FAILED',
+								message: 'Password reset link has expired!',
+							})
+						})
+						.catch((error) => {
+							console.log(error)
+							res.json({
+								status: 'FAILED',
+								message:
+									'Clearing the password record is not found',
+							})
+						})
+				} else {
+					bcrypt
+						.compare(resetString, hashedResetString)
+						.then((result) => {
+							if (result) {
+								const saltRounds = 10
+								bcrypt
+									.hash(newPassword, saltRounds)
+									.then((hashedNewPassword) => {
+										User.updateOne(
+											{ _id: userId },
+											{ password: hashedNewPassword }
+										)
+											.then(() => {
+												PasswordReset.deleteOne({
+													userId,
+												})
+													.then(() => {
+														res.json({
+															status: 'SUCCESS',
+															message:
+																'Password has been reset successfully',
+														})
+													})
+													.catch((error) => {
+														console.log(error)
+														res.json({
+															status: 'FAILED',
+															message:
+																'An error occured while finalising the password',
+														})
+													})
+											})
+											.catch((error) => {
+												console.log(error)
+												res.json({
+													status: 'FAILED',
+													message:
+														'Updating user password failed!',
+												})
+											})
+									})
+									.catch((error) => {
+										console.log(error)
+										res.json({
+											status: 'FAILED',
+											message:
+												'An error occured while hashing the passwords',
+										})
+									})
+							} else {
+								res.json({
+									status: 'FAILED',
+									message:
+										'Invalid password reset details passed!',
+								})
+							}
+						})
+						.catch((error) => {
+							console.log(error)
+							res.json({
+								status: 'FAILED',
+								message:
+									'Comparing password reset string failed!',
+							})
+						})
+				}
+			} else {
+				res.json({
+					status: 'FAILED',
+					message: 'Password reset request not found',
+				})
+			}
+		})
+		.catch((error) => {
+			console.log(error)
+			res.json({
+				status: 'FAILED',
+				message: 'Checking for existing password record failed',
+			})
+		})
+})
 
 export default router
