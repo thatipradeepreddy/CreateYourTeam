@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
 	Button,
 	StyleSheet,
@@ -13,6 +13,8 @@ import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { UserProps, loginUser } from '../Controls/common.control'
 import { NavigationProps } from './Routes'
+import Icon from 'react-native-vector-icons/Ionicons'
+import Icons from 'react-native-vector-icons/MaterialIcons'
 
 interface LoginRoutes {
 	addplayer: undefined
@@ -28,6 +30,17 @@ export function Login() {
 	const navigation = useNavigation<NavigationProps['navigation']>()
 	const [enteredUsernameOrEmail, setEnteredUsernameOrEmail] = useState('')
 	const [enteredPassword, setEnteredPassword] = useState('')
+	const [errorMessage, setErrorMessage] = useState('')
+	const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+
+	useEffect(() => {
+		if (errorMessage) {
+			const timer = setTimeout(() => {
+				setErrorMessage('')
+			}, 2000)
+			return () => clearTimeout(timer)
+		}
+	}, [errorMessage])
 
 	const handleLoginPress = () => {
 		const user = {
@@ -40,11 +53,11 @@ export function Login() {
 				if (response.success) {
 					navigation.navigate('addplayer')
 				} else {
-					console.error('Login failed:', response.message)
+					setErrorMessage(response.message || 'Login failed')
 				}
 			})
 			.catch((error) => {
-				console.error('Error during login:', error)
+				setErrorMessage('Error during login: ' + error.message)
 			})
 	}
 
@@ -57,50 +70,70 @@ export function Login() {
 	}
 
 	const renderHeading = () => {
-		return (
-			<View>
-				<Text style={styles.heading}>Login to C Y T</Text>
-			</View>
-		)
+		return <Text style={styles.heading}>Login to C Y T</Text>
 	}
 
 	const renderUserName = () => {
 		return (
 			<View>
-				<Text>Email or Username</Text>
+				<Text>Email</Text>
 				<TextInput
 					value={enteredUsernameOrEmail}
 					style={styles.input}
 					onChangeText={(text) => setEnteredUsernameOrEmail(text)}
 					placeholder='Enter Email or Username'
 				/>
-			</View>
-		)
-	}
 
-	const renderPassword = () => {
-		return (
-			<View>
 				<Text>Password</Text>
-				<TextInput
-					style={styles.input}
-					secureTextEntry={true}
-					value={enteredPassword}
-					onChangeText={(text) => setEnteredPassword(text)}
-					placeholder='Enter Password'
-				/>
-			</View>
-		)
-	}
+				<View style={styles.passwordContainer}>
+					<TextInput
+						style={styles.inputPassword}
+						secureTextEntry={!isPasswordVisible}
+						value={enteredPassword}
+						onChangeText={(text) => setEnteredPassword(text)}
+						placeholder='Enter Password'
+					/>
+					<TouchableOpacity
+						style={styles.eyeIcon}
+						onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+					>
+						<Icon
+							name={isPasswordVisible ? 'eye-off' : 'eye'}
+							size={23}
+							color='gray'
+						/>
+					</TouchableOpacity>
+				</View>
 
-	const renderButton = () => {
-		return (
-			<View style={styles.buttons}>
 				<TouchableOpacity
 					style={styles.close}
 					onPress={handleLoginPress}
 				>
 					<Text style={styles.submit}>Submit</Text>
+				</TouchableOpacity>
+			</View>
+		)
+	}
+
+	const renderAlertMessage = () => {
+		if (!errorMessage) return null
+
+		return (
+			<View style={styles.alertContainer}>
+				<Icons
+					style={styles.icon}
+					name='error-outline'
+					size={23}
+					color='red'
+				/>
+				<Text style={styles.errorMessage}>{errorMessage}</Text>
+				<TouchableOpacity onPress={() => setErrorMessage('')}>
+					<Icon
+						style={styles.icon}
+						name='close-circle-outline'
+						size={23}
+						color='black'
+					/>
 				</TouchableOpacity>
 			</View>
 		)
@@ -137,13 +170,10 @@ export function Login() {
 						contentContainerStyle={styles.scrollable}
 					>
 						<View style={styles.innerView}>
-							<View style={styles.nested}>
-								{renderHeading()}
-								{renderUserName()}
-								{renderPassword()}
-								{renderButton()}
-								{renderFooter()}
-							</View>
+							{renderHeading()}
+							{renderUserName()}
+							{renderFooter()}
+							{renderAlertMessage()}
 						</View>
 					</ScrollView>
 					{/* </ImageBackground> */}
@@ -162,37 +192,29 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 10,
 		marginBottom: 10,
 		borderRadius: 10,
-		paddingLeft: 15,
+		color: 'black',
 	},
 	main: {
 		backgroundColor: '#fff',
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
+		position: 'relative',
 	},
 	scrollable: {
 		flexGrow: 1,
 		width: '100%',
-	},
-	button: {
-		color: 'green',
 	},
 	innerView: {
 		flex: 1,
 		justifyContent: 'center',
 		padding: 20,
 	},
-	nested: {
-		borderColor: 'white',
-		borderWidth: 1,
-		borderRadius: 10,
-		padding: 20,
-		backgroundColor: 'white',
-	},
 	close: {
 		justifyContent: 'center',
 		backgroundColor: '#487790',
 		borderRadius: 8,
+		marginTop: 20,
 	},
 	heading: {
 		textAlign: 'center',
@@ -226,10 +248,48 @@ const styles = StyleSheet.create({
 		height: '100%',
 		backgroundColor: 'white',
 	},
+	icon: {},
 	backgroundImage: {
 		flex: 1,
 		resizeMode: 'cover',
 		width: '100%',
 		height: '100%',
+	},
+	alertContainer: {
+		position: 'absolute',
+		top: '10%',
+		left: 20,
+		right: 20,
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		borderRadius: 8,
+		height: 40,
+		backgroundColor: 'rgba(255, 0, 0, 0.1)',
+		paddingHorizontal: 8,
+		zIndex: 1000,
+	},
+	errorMessage: {
+		flex: 1,
+		marginLeft: 8,
+		color: 'red',
+	},
+	inputPassword: {
+		flex: 1,
+		height: 45,
+		borderColor: 'gray',
+		borderWidth: 1,
+		paddingHorizontal: 10,
+		borderRadius: 10,
+		color: 'black',
+	},
+	passwordContainer: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		position: 'relative',
+	},
+	eyeIcon: {
+		position: 'absolute',
+		right: 10,
 	},
 })

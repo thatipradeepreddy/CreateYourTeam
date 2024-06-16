@@ -11,155 +11,171 @@ import {
 	ImageBackground,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { Dialog } from '../Components/Dialog'
 import { UserProps, createUser } from '../Controls/common.control'
 import { NavigationProps } from './Routes'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import Icon from 'react-native-vector-icons/Ionicons'
+import Icons from 'react-native-vector-icons/MaterialIcons'
 
 export function RegisterUser() {
 	const navigation = useNavigation<NavigationProps['navigation']>()
-	const [dialogVisible, setDialogVisible] = useState(false)
+	const [errorMessage, setErrorMessage] = useState('')
+	const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+	const [isRegistered, setIsRegistered] = useState(false)
 	const [user, setUser] = useState<UserProps>({
 		name: '',
 		email: '',
 		password: '',
 	})
 
-	const handleConfirmSubmit = () => {
+	const handleRegister = () => {
+		if (!user.name || !user.email || !user.password) {
+			setErrorMessage('Please fill in all fields.')
+			setTimeout(() => setErrorMessage(''), 2000)
+			return
+		}
+
+		if (!user.email.endsWith('@gmail.com')) {
+			setErrorMessage('Please enter a valid Gmail address.')
+			setTimeout(() => setErrorMessage(''), 2000)
+			return
+		}
+
 		createUser(user)
-			.then((data: any) => {
-				console.log(data)
+			.then(() => {
+				setErrorMessage('User registered successfully!')
+				setTimeout(() => {
+					setErrorMessage('')
+					navigation.navigate('login')
+				}, 2000)
 			})
 			.catch((error: any) => {
-				console.error(error)
+				setErrorMessage(`Failed to register user: ${error.message}`)
 			})
-
-		navigation.navigate('login')
 	}
 
-	const renderHeading = () => {
+	const renderAlertMessage = () => {
+		if (!errorMessage) return null
+
 		return (
-			<View>
-				<Text style={styles.heading}>Register User</Text>
+			<View style={styles.alertContainer}>
+				<Icons name='error-outline' size={23} color='red' />
+				<Text style={styles.errorMessage}>{errorMessage}</Text>
+				<TouchableOpacity onPress={() => setErrorMessage('')}>
+					<Icon name='close-circle-outline' size={23} color='black' />
+				</TouchableOpacity>
 			</View>
 		)
 	}
 
-	const handleSubmit = () => {
-		setDialogVisible(true)
-	}
-
-	const renderDialogContent = () => {
-		return (
-			<Text key={user.name}>
-				Are you sure you want to register:
-				<Text style={styles.alertMessage}>"{user.name}"</Text>?
-			</Text>
-		)
-	}
-
-	const renderDialog = () => {
-		return (
-			<Dialog
-				isVisible={dialogVisible}
-				onClose={() => {
-					setDialogVisible(false)
-				}}
-				onConfirm={handleConfirmSubmit}
-			>
-				{renderDialogContent()}
-			</Dialog>
-		)
-	}
-
-	const renderDetails = () => {
-		return (
-			<View>
-				<Text>User Name</Text>
-				<TextInput
-					style={styles.input}
-					onChangeText={(text) => setUser({ ...user, name: text })}
-					value={user.name}
-					placeholder='Enter User Name'
-				/>
-
-				<Text>Enter Email</Text>
-				<TextInput
-					style={styles.input}
-					onChangeText={(text) => setUser({ ...user, email: text })}
-					value={user.email}
-					placeholder='Enter Email'
-				/>
-
-				<Text>Password</Text>
-				<TextInput
-					style={styles.input}
-					secureTextEntry={true}
-					onChangeText={(text) =>
-						setUser({ ...user, password: text })
-					}
-					value={user.password}
-					placeholder='Enter Password'
-				/>
-			</View>
-		)
-	}
-
-	const renderButton = () => {
-		return (
-			<View style={styles.buttons}>
-				<Button
-					color='green'
-					title='Register'
-					onPress={handleSubmit}
-				></Button>
-			</View>
-		)
-	}
-
-	const render = () => {
-		const image = {
-			uri: 'https://images.unsplash.com/photo-1593341646782-e0b495cff86d?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwxMTM3MjU5NXx8ZW58MHx8fHx8',
-		}
-		return (
-			<View style={styles.main}>
-				<View style={styles.backImageContainer}>
-					{/* <ImageBackground
-						source={image}
-						style={styles.backgroundImage}
-					> */}
-					<ScrollView
-						showsVerticalScrollIndicator={false}
-						showsHorizontalScrollIndicator={false}
-						contentContainerStyle={styles.scrollable}
-					>
-						<View style={styles.innerView}>
-							{renderHeading()}
-							{renderDetails()}
-							{renderButton()}
-							{renderDialog()}
+	return (
+		<View style={styles.main}>
+			<View style={styles.backImageContainer}>
+				<ScrollView
+					showsVerticalScrollIndicator={false}
+					showsHorizontalScrollIndicator={false}
+					contentContainerStyle={styles.scrollable}
+				>
+					<View style={styles.innerView}>
+						<View>
+							<Text style={styles.heading}>Register User</Text>
 						</View>
-					</ScrollView>
-					{/* </ImageBackground> */}
-				</View>
+
+						<View>
+							<Text>User Name</Text>
+							<TextInput
+								style={styles.input}
+								onChangeText={(text) =>
+									setUser({ ...user, name: text })
+								}
+								value={user.name}
+								placeholder='Enter User Name'
+							/>
+
+							<Text>Enter Email</Text>
+							<TextInput
+								style={styles.input}
+								onChangeText={(text) =>
+									setUser({ ...user, email: text })
+								}
+								value={user.email}
+								placeholder='Enter Email'
+							/>
+
+							<Text>Password</Text>
+							<View style={styles.passwordContainer}>
+								<TextInput
+									style={styles.inputPassword}
+									secureTextEntry={!isPasswordVisible}
+									onChangeText={(text) =>
+										setUser({ ...user, password: text })
+									}
+									value={user.password}
+									placeholder='Enter Password'
+								/>
+								<TouchableOpacity
+									style={styles.eyeIcon}
+									onPress={() =>
+										setIsPasswordVisible(!isPasswordVisible)
+									}
+								>
+									<Icon
+										name={
+											isPasswordVisible
+												? 'eye-off'
+												: 'eye'
+										}
+										size={23}
+										color='gray'
+									/>
+								</TouchableOpacity>
+							</View>
+							<TouchableOpacity
+								style={styles.close}
+								onPress={handleRegister}
+							>
+								<Text>Register</Text>
+							</TouchableOpacity>
+						</View>
+
+						{renderAlertMessage()}
+					</View>
+				</ScrollView>
 			</View>
-		)
-	}
-	return render()
+		</View>
+	)
 }
 
 const styles = StyleSheet.create({
 	input: {
-		height: 40,
+		height: 45,
 		borderColor: 'gray',
 		borderWidth: 1,
 		paddingHorizontal: 10,
 		marginBottom: 10,
 		borderRadius: 10,
-		paddingLeft: 15,
+		color: 'black',
+	},
+	inputPassword: {
+		flex: 1,
+		height: 45,
+		borderColor: 'gray',
+		borderWidth: 1,
+		paddingHorizontal: 10,
+		borderRadius: 10,
+		color: 'black',
+	},
+	passwordContainer: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		position: 'relative',
+	},
+	eyeIcon: {
+		position: 'absolute',
+		right: 10,
+		bottom: -11,
 	},
 	main: {
-		width: '100%',
-		height: '100%',
 		backgroundColor: '#fff',
 		flex: 1,
 		justifyContent: 'center',
@@ -169,38 +185,50 @@ const styles = StyleSheet.create({
 		flexGrow: 1,
 		width: '100%',
 	},
-	button: {
-		color: 'green',
-	},
 	innerView: {
-		padding: 20,
 		flex: 1,
 		justifyContent: 'center',
+		padding: 20,
 	},
 	heading: {
 		textAlign: 'center',
 		fontSize: 28,
 		fontWeight: 'bold',
 		color: 'black',
-		marginBottom: 60,
+		marginBottom: 40,
 	},
-	buttons: {
+	close: {
+		justifyContent: 'center',
+		backgroundColor: '#487790',
+		borderRadius: 8,
+		textAlign: 'center',
+		height: 40,
 		marginTop: 20,
+		alignItems: 'center',
 	},
-	alertMessage: {
-		fontWeight: 'bold',
-		color: '#ea5501',
+	alertContainer: {
+		position: 'absolute',
+		top: '10%',
+		left: 20,
+		right: 20,
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		borderRadius: 8,
+		height: 40,
+		backgroundColor: 'rgba(255, 0, 0, 0.1)',
+		paddingHorizontal: 8,
+		zIndex: 1000,
+	},
+	errorMessage: {
+		flex: 1,
+		marginLeft: 8,
+		color: 'red',
 	},
 	backImageContainer: {
 		flex: 1,
 		width: '100%',
 		height: '100%',
 		backgroundColor: 'white',
-	},
-	backgroundImage: {
-		flex: 1,
-		resizeMode: 'cover',
-		width: '100%',
-		height: '100%',
 	},
 })
