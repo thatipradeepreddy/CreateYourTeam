@@ -321,4 +321,102 @@ router.post('/signin', (req, res) => {
 	}
 })
 
+router.post('/requestPasswordReset', (req, res) => {
+	const { email, redirectUrl } = req.body
+	User.find({ email })
+		.then((data) => {
+			if (data.length) {
+				if (!data[0].verified) {
+					res.json({
+						status: 'FAILED',
+						message:
+							'Email has not been verified!, check your inbox',
+					})
+				} else {
+					sendResetEmail(data[0], redirectUrl, res)
+				}
+			} else {
+				res.json({
+					status: 'FAILED',
+					message: 'No accounts with the supplied email exists!',
+				})
+			}
+		})
+		.catch((error) => {
+			console.log(error)
+			res.json({
+				status: 'FAILED',
+				message: 'An error occurred while checking the user!',
+			})
+		})
+})
+
+const sendResetEmail = ({ _id, email }, redirectUrl, res) => {
+	const resetString = uuidv4 + _id
+	PasswordReset.deleteMany({ userId: _id })
+		.then((result) => {
+			const mailOptions = {
+				from: process.env.AUTH_EMAIL,
+				to: email,
+				subject: 'Password reset URL',
+				html: `<p>Now you can change your password with the below link</p>
+           <p>This link <b>expires in 30 minutes</b>.</p>
+           <p>Please click <a href="${redirectUrl + '/' + _id + resetString}">here</a> to verify your email.</p>`,
+			}
+
+			const saltRounds = 10
+			bcrypt
+				.hash(resetString, saltRounds)
+				.then((hashedResetString) => {
+					const newPasswordReset = new PasswordReset({
+						userId: _id,
+						resetString: hashedResetString,
+						createdAt: Date.now(),
+						expiresAt: Date.now() + 1800000,
+					})
+					newPasswordReset
+						.save()
+						.then(() => {
+							transporter
+								.sendMail(mailOptions)
+								.then(() => {
+									res.json({
+										status: 'PENDING',
+										message: 'Password reset link sent!',
+									})
+								})
+								.catch((error) => {
+									console.log(error)
+									res.json({
+										status: 'FAILED',
+										message: 'Password reset email failed!',
+									})
+								})
+						})
+						.catch((error) => {
+							console.log(error)
+							res.json({
+								status: 'FAILED',
+								message:
+									'Could not save the password reset date!',
+							})
+						})
+				})
+				.catch((error) => {
+					console.log(error)
+					res.json({
+						status: 'FAILED',
+						message: 'Error occured while hashing the password!',
+					})
+				})
+		})
+		.catch((error) => {
+			console.log(error)
+			res.json({
+				status: 'FAILED',
+				message: 'Clear exisitng password reset is failed',
+			})
+		})
+}
+
 export default router
