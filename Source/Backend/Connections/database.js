@@ -1,5 +1,7 @@
 import {
 	CricketersSchema,
+	NewUserSchema,
+	OTPSchema,
 	UserSchema,
 	UserVerificationSchema,
 	passwordResetSchema,
@@ -25,8 +27,12 @@ const CricketersData = mongoose.model('tournamets', CricketersSchema)
 
 const User = mongoose.model('kambalapally', UserSchema)
 
+const NewUser = mongoose.model('Newkambalapally', NewUserSchema)
+
 const UserVerification = mongoose.model('chenukada', UserVerificationSchema)
+
+const OTP = mongoose.model('OTP', OTPSchema)
 
 const PasswordReset = mongoose.model('passwordReset', passwordResetSchema)
 
-export { CricketersData, User, UserVerification, PasswordReset }
+export { CricketersData, User, UserVerification, PasswordReset, NewUser, OTP }

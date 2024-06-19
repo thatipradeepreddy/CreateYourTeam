@@ -10,7 +10,11 @@ import { deletePlayerByName } from './DataHandlers/deleteplayerbyname.js'
 import { addNewPlayer } from './DataHandlers/addnewplayer.js'
 import { updatePlayerByIdAndName } from './DataHandlers/editPlayerByName.js'
 import { getPlayerByIdAndName } from './DataHandlers/getPlayerByName.js'
-import userRouter from './UserHandlers/user.js'
+// import userRouter from './UserHandlers/user.js'
+import signuprouter from './UserHandlers/newuser.js'
+import loginrouter from './UserHandlers/login.js'
+import protectedrouter from './UserHandlers/protectedroute.js'
+import otprouter from './UserHandlers/otp/otp.js'
 
 const app = express()
 
@@ -22,7 +26,13 @@ app.use(
 
 app.use(bodyParser.json())
 
-app.use('/user', userRouter)
+app.use('/user', signuprouter)
+
+// app.use('/user', loginrouter)
+
+// app.use('/user', protectedrouter)
+
+// app.use('/otp', otprouter)
 
 app.post('/createdata', createData)
 

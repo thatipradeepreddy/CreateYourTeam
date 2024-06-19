@@ -22,7 +22,21 @@ const UserSchema = new mongoose.Schema({
 	verified: { type: Boolean },
 })
 
+const NewUserSchema = new mongoose.Schema({
+	name: { type: String, required: true },
+	email: { type: String, required: true, unique: true },
+	password: { type: String, required: true },
+	token: { type: String },
+})
+
 const UserVerificationSchema = new mongoose.Schema({
+	email: { type: String, required: true, unique: true },
+	otp: { type: String},
+	createdAt: { type: Date, required: true },
+	expiresAt: { type: Date },
+})
+
+const OTPSchema = new mongoose.Schema({
 	userId: { type: String, required: true },
 	uniqueString: { type: String, required: true, unique: true },
 	createdAt: { type: Date, required: true },
@@ -41,4 +55,6 @@ export {
 	UserSchema,
 	UserVerificationSchema,
 	passwordResetSchema,
+	NewUserSchema,
+	OTPSchema,
 }
