@@ -23,16 +23,16 @@ mongoose
 		console.error('Connection error:', err.message)
 	})
 
-const CricketersData = mongoose.model('tournamets', CricketersSchema)
+const CricketersData = mongoose.model('playersDB', CricketersSchema)
 
-const User = mongoose.model('kambalapally', UserSchema)
+const User = mongoose.model('usersDB', UserSchema)
 
-const NewUser = mongoose.model('Newkambalapally', NewUserSchema)
+const NewUser = mongoose.model('newUserDB', NewUserSchema)
 
-const UserVerification = mongoose.model('chenukada', UserVerificationSchema)
+const UserVerification = mongoose.model('userVerificationDB', UserVerificationSchema)
 
-const OTP = mongoose.model('OTP', OTPSchema)
+const OTP = mongoose.model('OTPDB', OTPSchema)
 
-const PasswordReset = mongoose.model('passwordReset', passwordResetSchema)
+const PasswordReset = mongoose.model('passwordResetDB', passwordResetSchema)
 
 export { CricketersData, User, UserVerification, PasswordReset, NewUser, OTP }
