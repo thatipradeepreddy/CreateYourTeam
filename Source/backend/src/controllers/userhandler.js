@@ -7,8 +7,8 @@ import { v4 as uuidv4 } from "uuid"
 import path from "path"
 import multer from "multer"
 import { fileURLToPath } from "url"
-import { GridFsStorage } from 'multer-gridfs-storage';
-import { GridFSBucket } from 'mongodb';
+import { GridFsStorage } from "multer-gridfs-storage"
+import { GridFSBucket } from "mongodb"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -44,14 +44,9 @@ const storage = multer.diskStorage({
     },
 })
 
-const upload = multer({ storage })
 
-router.post("/signup", upload.single("image"), (req, res) => {
+router.post("/signup", (req, res) => {
     let { name, email, password } = req.body
-    let image = req.file ? req.file.path : null
-
-    console.log("Request Body:", req.body)
-
     // name = name.trim()
     // email = email.trim()
     // password = password.trim()
@@ -92,7 +87,6 @@ router.post("/signup", upload.single("image"), (req, res) => {
                             const newUser = new User({
                                 name,
                                 email,
-                                image,
                                 password: hashedPassword,
                                 verified: false,
                             })
