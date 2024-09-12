@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, StyleSheet, TextInput, View, Text, ScrollView, TouchableOpacity, ImageBackground } from 'react-native'
+import { Button, StyleSheet, TextInput, View, Text, ScrollView, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { UserProps, loginUser } from '../Controls/common.control'
@@ -60,8 +60,8 @@ export function Login() {
         navigation.navigate('forgot')
     }
 
-    const renderHeading = () => {
-        return <Text style={styles.heading}>Login to C Y T</Text>
+    const handleBack = () => {
+        navigation.navigate('landing')
     }
 
     const renderUserName = () => {
@@ -88,10 +88,6 @@ export function Login() {
                         <Icon name={isPasswordVisible ? 'eye-off' : 'eye'} size={23} color="gray" />
                     </TouchableOpacity>
                 </View>
-
-                <TouchableOpacity style={styles.close} onPress={handleLoginPress}>
-                    <Text style={styles.submit}>Submit</Text>
-                </TouchableOpacity>
             </View>
         )
     }
@@ -116,53 +112,46 @@ export function Login() {
                 <TouchableOpacity onPress={handleForgot}>
                     <Text style={styles.linkText}>Forgot Password?</Text>
                 </TouchableOpacity>
-
-                <TouchableOpacity onPress={handleRegister}>
-                    <Text style={styles.linkText}>Register User</Text>
-                </TouchableOpacity>
             </View>
         )
     }
 
     const render = () => {
-        const image = {
-            // uri: 'https://images.unsplash.com/photo-1593341646782-e0b495cff86d?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwxMTM3MjU5NXx8ZW58MHx8fHx8',
-        }
         return (
             <View style={styles.main}>
-                <View style={styles.backImageContainer}>
-                    {/* <ImageBackground
-                        source={image}
-                        style={styles.backgroundImage}
-                    > */}
-                    <ScrollView
-                        showsVerticalScrollIndicator={false}
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={styles.scrollable}
-                    >
-                        <View style={styles.innerView}>
-                            {renderHeading()}
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.scrollable}
+                >
+                    <View style={styles.innerView}>
+                        <View style={styles.topSection}>
                             {renderUserName()}
                             {renderFooter()}
+                        </View>
+                        <View style={styles.bottomSection}>
+                            <TouchableOpacity style={styles.close} onPress={handleLoginPress}>
+                                <Text style={styles.submit}>Submit</Text>
+                            </TouchableOpacity>
                             {renderAlertMessage()}
                         </View>
-                    </ScrollView>
-                    {/* </ImageBackground> */}
-                </View>
+                    </View>
+                </ScrollView>
             </View>
         )
     }
+
     return render()
 }
 
 const styles = StyleSheet.create({
     input: {
-        height: 45,
+        height: 50,
         borderColor: 'gray',
         borderWidth: 1,
         paddingHorizontal: 10,
         marginBottom: 10,
-        borderRadius: 10,
+        borderRadius: 6,
         color: 'black',
     },
     main: {
@@ -178,29 +167,27 @@ const styles = StyleSheet.create({
     },
     innerView: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         padding: 20,
+    },
+    topSection: {
+        flex: 1,
+        justifyContent: 'flex-start',
+    },
+    bottomSection: {
+        justifyContent: 'flex-end',
     },
     close: {
         justifyContent: 'center',
         backgroundColor: '#487790',
-        borderRadius: 8,
-        marginTop: 20,
-    },
-    heading: {
-        textAlign: 'center',
-        fontSize: 35,
-        fontWeight: 'bold',
-        color: 'black',
-        marginBottom: 40,
-    },
-    buttons: {
-        marginTop: 20,
+        borderRadius: 6,
+        marginBottom: 20,
+        height: 50,
     },
     submit: {
         padding: 10,
         fontSize: 16,
-        color: 'black',
+        color: 'white',
         textAlign: 'center',
     },
     footer: {
@@ -213,24 +200,7 @@ const styles = StyleSheet.create({
         textDecorationLine: 'underline',
         color: 'black',
     },
-    backImageContainer: {
-        flex: 1,
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'white',
-    },
-    icon: {},
-    backgroundImage: {
-        flex: 1,
-        resizeMode: 'cover',
-        width: '100%',
-        height: '100%',
-    },
     alertContainer: {
-        position: 'absolute',
-        top: '10%',
-        left: 20,
-        right: 20,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -245,13 +215,14 @@ const styles = StyleSheet.create({
         marginLeft: 8,
         color: 'red',
     },
+    icon: {},
     inputPassword: {
         flex: 1,
-        height: 45,
+        height: 50,
         borderColor: 'gray',
         borderWidth: 1,
         paddingHorizontal: 10,
-        borderRadius: 10,
+        borderRadius: 6,
         color: 'black',
     },
     passwordContainer: {
@@ -262,5 +233,23 @@ const styles = StyleSheet.create({
     eyeIcon: {
         position: 'absolute',
         right: 10,
+    },
+    topBar: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 10,
+        marginBottom: 20,
+    },
+    headerText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginHorizontal: 20,
+        textAlign: 'center',
+        flex: 1,
+    },
+    backButton: {
+        position: 'absolute',
+        left: 3,
     },
 })

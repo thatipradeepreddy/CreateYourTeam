@@ -12,75 +12,79 @@ import { Maps } from './Source/Frontend/Pages/Maps'
 const Stack = createStackNavigator()
 
 const App = () => {
-	return (
-		<NavigationContainer>
-			<Stack.Navigator initialRouteName='Home'>
-				<Stack.Screen
-					name='landing'
-					component={LandingPage}
-					options={({ route }) => ({
-						headerShown: false,
-					})}
-				/>
+    return (
+        <NavigationContainer>
+            <Stack.Navigator initialRouteName="Home">
+                <Stack.Screen
+                    name="landing"
+                    component={LandingPage}
+                    options={({ route }) => ({
+                        headerShown: false,
+                    })}
+                />
 
-				<Stack.Screen
-					name='login'
-					component={Login}
-					options={({ route }) => ({
-						headerShown: false,
-					})}
-				/>
+                <Stack.Screen
+                    name="login"
+                    component={Login}
+                    options={({ route }) => ({
+                        headerShown: true,
+                        headerTitle: 'Login to Continue',
+                        headerTitleAlign: 'center',
+                    })}
+                />
 
-				<Stack.Screen
-					name='addplayer'
-					component={BasicInfo}
-					options={({ route }) => ({
-						headerShown: false,
-					})}
-				/>
+                <Stack.Screen
+                    name="addplayer"
+                    component={BasicInfo}
+                    options={({ route }) => ({
+                        headerShown: false,
+                    })}
+                />
 
-				<Stack.Screen
-					name='editplayer'
-					component={BasicInfo}
-					options={({ route }) => ({
-						headerShown: false,
-					})}
-				/> 
+                <Stack.Screen
+                    name="editplayer"
+                    component={BasicInfo}
+                    options={({ route }) => ({
+                        headerShown: false,
+                    })}
+                />
 
-				<Stack.Screen
-					name='playerslist'
-					component={PlayersList}
-					options={({ route }) => ({
-						headerShown: false,
-					})}
-				/>
+                <Stack.Screen
+                    name="playerslist"
+                    component={PlayersList}
+                    options={({ route }) => ({
+                        headerShown: false,
+                    })}
+                />
 
-				<Stack.Screen
-					name='location'
-					component={Maps}
-					options={({ route }) => ({
-						headerShown: false,
-					})}
-				/>
+                <Stack.Screen
+                    name="location"
+                    component={Maps}
+                    options={({ route }) => ({
+                        headerShown: false,
+                    })}
+                />
 
-				<Stack.Screen
-					name='register'
-					component={RegisterUser}
-					options={({ route }) => ({
-						headerShown: false,
-					})}
-				/>
+                <Stack.Screen
+                    name="register"
+                    component={RegisterUser}
+                    options={({ route }) => ({
+                        headerShown: true,
+                        headerTitle: 'Register User',
+                        headerTitleAlign: 'center',
+                    })}
+                />
 
-				<Stack.Screen
-					name='forgot'
-					component={ForgotPassword}
-					options={({ route }) => ({
-						headerShown: false,
-					})}
-				/>
-			</Stack.Navigator>
-		</NavigationContainer>
-	)
+                <Stack.Screen
+                    name="forgot"
+                    component={ForgotPassword}
+                    options={({ route }) => ({
+                        headerShown: false,
+                    })}
+                />
+            </Stack.Navigator>
+        </NavigationContainer>
+    )
 }
 
 export default App

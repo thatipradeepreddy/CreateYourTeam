@@ -1,19 +1,8 @@
 import React, { useState } from 'react'
-import {
-    Button,
-    StyleSheet,
-    TextInput,
-    View,
-    Text,
-    SafeAreaView,
-    TouchableHighlight,
-    ScrollView,
-    ImageBackground,
-} from 'react-native'
+import { StyleSheet, TextInput, View, Text, SafeAreaView, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { UserProps, createUser } from '../Controls/common.control'
 import { NavigationProps } from './Routes'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Icons from 'react-native-vector-icons/MaterialIcons'
 
@@ -21,7 +10,6 @@ export function RegisterUser() {
     const navigation = useNavigation<NavigationProps['navigation']>()
     const [errorMessage, setErrorMessage] = useState('')
     const [isPasswordVisible, setIsPasswordVisible] = useState(false)
-    const [isRegistered, setIsRegistered] = useState(false)
     const [user, setUser] = useState<UserProps>({
         name: '',
         email: '',
@@ -69,124 +57,56 @@ export function RegisterUser() {
     }
 
     return (
-        <View style={styles.main}>
-            <View style={styles.backImageContainer}>
-                <ScrollView
-                    showsVerticalScrollIndicator={false}
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.scrollable}
-                >
-                    <View style={styles.innerView}>
-                        <View>
-                            <Text style={styles.heading}>Register User</Text>
-                        </View>
+        <SafeAreaView style={styles.main}>
+            {renderAlertMessage()}
+            <View style={styles.innerView}>
+                <View style={styles.formContainer}>
+                    <Text>User Name</Text>
+                    <TextInput
+                        style={styles.input}
+                        onChangeText={(text) => setUser({ ...user, name: text })}
+                        value={user.name}
+                        placeholder="Enter User Name"
+                    />
 
-                        <View>
-                            <Text>User Name</Text>
-                            <TextInput
-                                style={styles.input}
-                                onChangeText={(text) => setUser({ ...user, name: text })}
-                                value={user.name}
-                                placeholder="Enter User Name"
-                            />
+                    <Text>Enter Email</Text>
+                    <TextInput
+                        style={styles.input}
+                        onChangeText={(text) => setUser({ ...user, email: text })}
+                        value={user.email}
+                        placeholder="Enter Email"
+                    />
 
-                            <Text>Enter Email</Text>
-                            <TextInput
-                                style={styles.input}
-                                onChangeText={(text) => setUser({ ...user, email: text })}
-                                value={user.email}
-                                placeholder="Enter Email"
-                            />
-
-                            <Text>Password</Text>
-                            <View style={styles.passwordContainer}>
-                                <TextInput
-                                    style={styles.inputPassword}
-                                    secureTextEntry={!isPasswordVisible}
-                                    onChangeText={(text) => setUser({ ...user, password: text })}
-                                    value={user.password}
-                                    placeholder="Enter Password"
-                                />
-                                <TouchableOpacity style={styles.eyeIcon} onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
-                                    <Icon name={isPasswordVisible ? 'eye-off' : 'eye'} size={23} color="gray" />
-                                </TouchableOpacity>
-                            </View>
-                            <TouchableOpacity style={styles.close} onPress={handleRegister}>
-                                <Text>Register</Text>
-                            </TouchableOpacity>
-                        </View>
-
-                        {renderAlertMessage()}
+                    <Text>Password</Text>
+                    <View style={styles.passwordContainer}>
+                        <TextInput
+                            style={styles.inputPassword}
+                            secureTextEntry={!isPasswordVisible}
+                            onChangeText={(text) => setUser({ ...user, password: text })}
+                            value={user.password}
+                            placeholder="Enter Password"
+                        />
+                        <TouchableOpacity style={styles.eyeIcon} onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
+                            <Icon name={isPasswordVisible ? 'eye-off' : 'eye'} size={23} color="gray" />
+                        </TouchableOpacity>
                     </View>
-                </ScrollView>
+                </View>
+                <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+                    <Text style={styles.registerButtonText}>Register</Text>
+                </TouchableOpacity>
             </View>
-        </View>
+        </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
-    input: {
-        height: 45,
-        borderColor: 'gray',
-        borderWidth: 1,
-        paddingHorizontal: 10,
-        marginBottom: 10,
-        borderRadius: 10,
-        color: 'black',
-    },
-    inputPassword: {
-        flex: 1,
-        height: 45,
-        borderColor: 'gray',
-        borderWidth: 1,
-        paddingHorizontal: 10,
-        borderRadius: 10,
-        color: 'black',
-    },
-    passwordContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        position: 'relative',
-    },
-    eyeIcon: {
-        position: 'absolute',
-        right: 10,
-        bottom: -11,
-    },
     main: {
+        flex: 1,
         backgroundColor: '#fff',
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    scrollable: {
-        flexGrow: 1,
-        width: '100%',
-    },
-    innerView: {
-        flex: 1,
-        justifyContent: 'center',
-        padding: 20,
-    },
-    heading: {
-        textAlign: 'center',
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: 'black',
-        marginBottom: 40,
-    },
-    close: {
-        justifyContent: 'center',
-        backgroundColor: '#487790',
-        borderRadius: 8,
-        textAlign: 'center',
-        height: 40,
-        marginTop: 20,
-        alignItems: 'center',
     },
     alertContainer: {
         position: 'absolute',
-        top: '10%',
+        top: 20,
         left: 20,
         right: 20,
         flexDirection: 'row',
@@ -203,10 +123,53 @@ const styles = StyleSheet.create({
         marginLeft: 8,
         color: 'red',
     },
-    backImageContainer: {
+    innerView: {
         flex: 1,
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'white',
+        justifyContent: 'space-between',
+        padding: 20,
+    },
+    formContainer: {
+        justifyContent: 'center',
+    },
+    input: {
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 1,
+        paddingHorizontal: 10,
+        marginBottom: 10,
+        borderRadius: 6,
+        color: 'black',
+    },
+    inputPassword: {
+        flex: 1,
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 1,
+        paddingHorizontal: 10,
+        borderRadius: 6,
+        color: 'black',
+    },
+    passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        position: 'relative',
+    },
+    eyeIcon: {
+        position: 'absolute',
+        right: 10,
+        bottom: 11,
+    },
+    registerButton: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#487790',
+        borderRadius: 6,
+        height: 50,
+        marginBottom: 20,
+    },
+    registerButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
     },
 })
