@@ -3,10 +3,8 @@ export interface Player {
     name: string
     age: string
     nation: string
-    ranking: string
     premierLeague: string
     image: string
-    wikipediaUrl: string
 }
 
 export interface PlayerProps {
@@ -67,7 +65,7 @@ export const loginUser = async (user: { email: string; password: string }): Prom
         }
 
         const data = await response.json()
-        
+
         await AsyncStorage.setItem('userId', data.data._id)
 
         if (data.status === 'SUCCESS') {

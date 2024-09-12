@@ -22,10 +22,8 @@ interface Player {
     name: string
     age: string
     nation: string
-    ranking: string
     premierLeague: string
     image: string
-    wikipediaUrl: string
 }
 
 interface PlayerProps {
@@ -283,17 +281,28 @@ export function PlayersList() {
                             expandedTeams[team._id] &&
                             team.player.map((player: Player) => (
                                 <View style={styles.player} key={player.name}>
-                                    <TouchableOpacity onPress={() => handleNavigate(player.wikipediaUrl)}>
+                                    <TouchableOpacity>
                                         <View>
                                             <Image source={{ uri: player.image }} style={styles.image} />
                                         </View>
                                     </TouchableOpacity>
-                                    <View>
-                                        <Text>Name: {player.name}</Text>
-                                        <Text>Age: {player.age}</Text>
-                                        <Text>Nation: {player.nation}</Text>
-                                        <Text>Ranking: {player.ranking}</Text>
-                                        <Text>Premier League: {player.premierLeague}</Text>
+                                    <View style={styles.container}>
+                                        <View style={styles.row}>
+                                            <Text style={styles.label}>Name:</Text>
+                                            <Text>{player.name}</Text>
+                                        </View>
+                                        <View style={styles.row}>
+                                            <Text style={styles.label}>Age:</Text>
+                                            <Text>{player.age}</Text>
+                                        </View>
+                                        <View style={styles.row}>
+                                            <Text style={styles.label}>Place:</Text>
+                                            <Text>{player.nation}</Text>
+                                        </View>
+                                        <View style={styles.row}>
+                                            <Text style={styles.label}>Player Type:</Text>
+                                            <Text>{player.premierLeague}</Text>
+                                        </View>
                                     </View>
                                     <View style={styles.iconsContainer}>
                                         <TouchableOpacity onPress={() => handleEdit(team._id)}>
@@ -416,6 +425,17 @@ const styles = StyleSheet.create({
     playerContainer: {
         height: '100%',
         padding: 10,
+    },
+    container: {
+        // padding: 10,
+    },
+    row: {
+        flexDirection: 'row',
+        marginBottom: 5,
+    },
+    label: {
+        fontWeight: '600',
+        marginRight: 5, // Space between label and value
     },
     select: {
         fontSize: 20,

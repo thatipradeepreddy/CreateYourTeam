@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     },
     footerContainer: {
         width: '100%',
-        paddingHorizontal: 15,
+        paddingHorizontal: 10,
         alignItems: 'center',
     },
     createAccount: {

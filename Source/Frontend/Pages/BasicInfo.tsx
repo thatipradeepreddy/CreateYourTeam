@@ -10,10 +10,8 @@ export interface Player {
     name: string
     age: string
     nation: string
-    ranking: string
     premierLeague: string
     image: string
-    wikipediaUrl: string
 }
 
 export interface PlayerProps {
@@ -56,9 +54,7 @@ export function BasicInfo() {
                     age: '',
                     nation: '',
                     premierLeague: '',
-                    ranking: '',
                     image: '',
-                    wikipediaUrl: '',
                 },
             ],
         })
@@ -75,9 +71,7 @@ export function BasicInfo() {
                     age: '',
                     nation: '',
                     premierLeague: '',
-                    ranking: '',
                     image: '',
-                    wikipediaUrl: '',
                 },
             ],
         })
@@ -192,11 +186,11 @@ export function BasicInfo() {
     const renderContent = () => (
         <View style={styles.content}>
             <View style={styles.inputsContainer}>
-                <Text style={{ color: '#487790' }}>Place</Text>
+                <Text style={{ color: '#487790' }}>Team</Text>
                 <TextInput
                     style={styles.inputHeading}
                     onChangeText={(text) => setPlayerState({ ...playerState, place: text })}
-                    placeholder="Enter Place"
+                    placeholder="Enter Team"
                     value={playerState.place}
                     placeholderTextColor={'black'}
                 />
@@ -226,44 +220,26 @@ export function BasicInfo() {
                             placeholderTextColor={'black'}
                         />
 
-                        <Text style={styles.inputHeadings}>Nation</Text>
+                        <Text style={styles.inputHeadings}>Place</Text>
                         <TextInput
                             style={styles.input}
                             onChangeText={(text) => handleChangePlayerData(index, 'nation', text)}
-                            placeholder="Enter Nation"
+                            placeholder="Enter Place"
                             value={player.nation}
                             placeholderTextColor={'black'}
                         />
 
-                        <Text style={styles.inputHeadings}>Ranking</Text>
-                        <TextInput
-                            style={styles.input}
-                            onChangeText={(text) => handleChangePlayerData(index, 'ranking', text)}
-                            placeholder="Enter Ranking"
-                            value={player.ranking}
-                            placeholderTextColor={'black'}
-                        />
-
-                        <Text style={styles.inputHeadings}>Premier League</Text>
+                        <Text style={styles.inputHeadings}>Player Type</Text>
                         <TextInput
                             style={styles.input}
                             onChangeText={(text) => handleChangePlayerData(index, 'premierLeague', text)}
-                            placeholder="Enter Premier League"
+                            placeholder="Enter Player Type"
                             value={player.premierLeague}
                             placeholderTextColor={'black'}
                         />
-
+                        
                         <Text style={styles.inputHeadings}>Image</Text>
                         <ImageUpload onImageSelect={handleImageSelect} />
-
-                        <Text style={styles.inputHeadings}>Wikipedia Url</Text>
-                        <TextInput
-                            style={styles.input}
-                            onChangeText={(text) => handleChangePlayerData(index, 'wikipediaUrl', text)}
-                            placeholder="Enter Wikipedia Url"
-                            value={player.wikipediaUrl}
-                            placeholderTextColor={'black'}
-                        />
                     </View>
                 ))}
             </View>
