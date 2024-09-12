@@ -1,21 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { Button, StyleSheet, TextInput, View, Text, ScrollView, TouchableOpacity } from 'react-native'
+import React, { useState } from 'react'
+import { Button, StyleSheet, TextInput, View, Text, TouchableOpacity, SafeAreaView } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { StackNavigationProp } from '@react-navigation/stack'
 import { UserProps, loginUser } from '../Controls/common.control'
 import { NavigationProps } from './Routes'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Icons from 'react-native-vector-icons/MaterialIcons'
-
-interface LoginRoutes {
-    addplayer: undefined
-    register: undefined
-    [key: string]: undefined
-}
-
-interface HomeScreenProps {
-    navigation: StackNavigationProp<LoginRoutes, 'addplayer', 'register'>
-}
 
 export function Login() {
     const navigation = useNavigation<NavigationProps['navigation']>()
@@ -24,15 +13,6 @@ export function Login() {
     const [errorMessage, setErrorMessage] = useState('')
     const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
-    useEffect(() => {
-        if (errorMessage) {
-            const timer = setTimeout(() => {
-                setErrorMessage('')
-            }, 2000)
-            return () => clearTimeout(timer)
-        }
-    }, [errorMessage])
-
     const handleLoginPress = () => {
         const user = {
             email: enteredUsernameOrEmail,
@@ -40,16 +20,14 @@ export function Login() {
         }
 
         loginUser(user)
-            .then((response) => {
+            .then((response: any) => {
                 if (response.success) {
                     navigation.navigate('addplayer')
-                } else {
-                    setErrorMessage(response.message || 'Login failed')
+                } else if (response.success === false) {
+                    setErrorMessage('Login failed, Invalid credentials entered!')
                 }
             })
-            .catch((error) => {
-                setErrorMessage('Error during login: ' + error.message)
-            })
+            .catch((error) => {})
     }
 
     const handleRegister = () => {
@@ -58,10 +36,6 @@ export function Login() {
 
     const handleForgot = () => {
         navigation.navigate('forgot')
-    }
-
-    const handleBack = () => {
-        navigation.navigate('landing')
     }
 
     const renderUserName = () => {
@@ -118,26 +92,22 @@ export function Login() {
 
     const render = () => {
         return (
-            <View style={styles.main}>
-                <ScrollView
-                    showsVerticalScrollIndicator={false}
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.scrollable}
-                >
-                    <View style={styles.innerView}>
-                        <View style={styles.topSection}>
-                            {renderUserName()}
-                            {renderFooter()}
-                        </View>
-                        <View style={styles.bottomSection}>
-                            <TouchableOpacity style={styles.close} onPress={handleLoginPress}>
-                                <Text style={styles.submit}>Submit</Text>
-                            </TouchableOpacity>
-                            {renderAlertMessage()}
-                        </View>
+            <SafeAreaView style={styles.main}>
+                <View style={styles.innerView}>
+                    <View style={styles.topSection}>
+                        {renderUserName()}
+                        {renderFooter()}
                     </View>
-                </ScrollView>
-            </View>
+                    <View style={styles.bottomSection}>
+                        {!errorMessage && (
+                            <TouchableOpacity style={styles.close} onPress={handleLoginPress}>
+                                <Text style={styles.submit}>Login</Text>
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                    {renderAlertMessage()}
+                </View>
+            </SafeAreaView>
         )
     }
 
@@ -159,15 +129,11 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        position: 'relative',
-    },
-    scrollable: {
-        flexGrow: 1,
-        width: '100%',
     },
     innerView: {
         flex: 1,
         justifyContent: 'space-between',
+        width: '100%',
         padding: 20,
     },
     topSection: {
@@ -207,8 +173,9 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         height: 40,
         backgroundColor: 'rgba(255, 0, 0, 0.1)',
-        paddingHorizontal: 8,
+        paddingHorizontal: 15,
         zIndex: 1000,
+        marginBottom: 20
     },
     errorMessage: {
         flex: 1,
@@ -233,23 +200,5 @@ const styles = StyleSheet.create({
     eyeIcon: {
         position: 'absolute',
         right: 10,
-    },
-    topBar: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 10,
-        marginBottom: 20,
-    },
-    headerText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginHorizontal: 20,
-        textAlign: 'center',
-        flex: 1,
-    },
-    backButton: {
-        position: 'absolute',
-        left: 3,
     },
 })

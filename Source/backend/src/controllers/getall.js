@@ -1,13 +1,12 @@
 import { CricketersData } from "../models/userhandler.js"
 
-function getAllData(request, response) {
-    CricketersData.find((err, data) => {
-        if (err) {
-            response.status(500).send("Database err", err)
-        } else {
-            response.status(200).json(data)
-        }
-    })
+export async function getAllData(request, response) {
+    try {
+        const data = await CricketersData.find()
+        console.log(data, "Fetched Data")
+        response.status(200).json(data)
+    } catch (err) {
+        console.error("Database error:", err)
+        response.status(500).send("Database error")
+    }
 }
-
-export { getAllData }

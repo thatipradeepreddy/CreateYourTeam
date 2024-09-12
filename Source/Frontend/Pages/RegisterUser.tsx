@@ -9,6 +9,8 @@ import Icons from 'react-native-vector-icons/MaterialIcons'
 export function RegisterUser() {
     const navigation = useNavigation<NavigationProps['navigation']>()
     const [errorMessage, setErrorMessage] = useState('')
+    const [successMessage, setSuccessMessage] = useState('')
+    const [loading, setLoading] = useState(false)
     const [isPasswordVisible, setIsPasswordVisible] = useState(false)
     const [user, setUser] = useState<UserProps>({
         name: '',
@@ -29,27 +31,43 @@ export function RegisterUser() {
             return
         }
 
+        setLoading(true)
+
         createUser(user)
-            .then(() => {
-                setErrorMessage('User registered successfully!')
-                setTimeout(() => {
-                    setErrorMessage('')
-                    navigation.navigate('login')
-                }, 2000)
+            .then((response: any) => {
+                if (response.status === 'PENDING') {
+                    setSuccessMessage('Verification email sent')
+                } else if (response.status === 'FAILED') {
+                    setErrorMessage('User with the provided email already exists!')
+                }
             })
             .catch((error: any) => {
                 setErrorMessage(`Failed to register user: ${error.message}`)
             })
+            .finally(() => {
+                setLoading(false)
+            })
     }
 
     const renderAlertMessage = () => {
-        if (!errorMessage) return null
+        if (!errorMessage && !successMessage) return null
 
         return (
             <View style={styles.alertContainer}>
-                <Icons name="error-outline" size={23} color="red" />
-                <Text style={styles.errorMessage}>{errorMessage}</Text>
-                <TouchableOpacity onPress={() => setErrorMessage('')}>
+                <Icons
+                    name={errorMessage ? 'error-outline' : 'check-circle-outline'}
+                    size={23}
+                    color={errorMessage ? 'red' : 'green'}
+                />
+                <Text style={[styles.alertMessage, errorMessage ? styles.errorText : styles.successText]}>
+                    {errorMessage || successMessage}
+                </Text>
+                <TouchableOpacity
+                    onPress={() => {
+                        setErrorMessage('')
+                        setSuccessMessage('')
+                    }}
+                >
                     <Icon name="close-circle-outline" size={23} color="black" />
                 </TouchableOpacity>
             </View>
@@ -58,7 +76,6 @@ export function RegisterUser() {
 
     return (
         <SafeAreaView style={styles.main}>
-            {renderAlertMessage()}
             <View style={styles.innerView}>
                 <View style={styles.formContainer}>
                     <Text>User Name</Text>
@@ -91,10 +108,13 @@ export function RegisterUser() {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-                    <Text style={styles.registerButtonText}>Register</Text>
-                </TouchableOpacity>
+                {!errorMessage && !successMessage && (
+                    <TouchableOpacity style={styles.registerButton} onPress={handleRegister} disabled={loading}>
+                        <Text style={styles.registerButtonText}>{loading ? 'Register...' : 'Register'}</Text>
+                    </TouchableOpacity>
+                )}
             </View>
+            {renderAlertMessage()}
         </SafeAreaView>
     )
 }
@@ -106,7 +126,7 @@ const styles = StyleSheet.create({
     },
     alertContainer: {
         position: 'absolute',
-        top: 20,
+        bottom: 80,
         left: 20,
         right: 20,
         flexDirection: 'row',
@@ -118,10 +138,15 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
         zIndex: 1000,
     },
-    errorMessage: {
+    alertMessage: {
         flex: 1,
         marginLeft: 8,
+    },
+    errorText: {
         color: 'red',
+    },
+    successText: {
+        color: 'green',
     },
     innerView: {
         flex: 1,
