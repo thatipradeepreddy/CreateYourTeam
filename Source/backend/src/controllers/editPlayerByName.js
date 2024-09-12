@@ -1,7 +1,8 @@
-import { CricketersData } from '../Connections/database.js'
+import { CricketersData } from "../models/userhandler.js"
 
-export const deletePlayerByName = async (request, response) => {
+export const updatePlayerByIdAndName = async (request, response) => {
 	const { id, name } = request.params
+	const updatedFields = request.body
 
 	try {
 		const cricketer = await CricketersData.findOne({ _id: id })
@@ -18,11 +19,15 @@ export const deletePlayerByName = async (request, response) => {
 			return response.status(404).json({ message: 'Player not found' })
 		}
 
-		cricketer.player.splice(playerIndex, 1)
+		// Update all fields for the player
+		cricketer.player[playerIndex] = {
+			...cricketer.player[playerIndex],
+			...updatedFields,
+		}
 
 		await cricketer.save()
 
-		response.status(200).json({ message: 'Player deleted successfully' })
+		response.status(200).json({ message: 'Player updated successfully' })
 	} catch (error) {
 		response.status(500).json({ error: error.message })
 	}

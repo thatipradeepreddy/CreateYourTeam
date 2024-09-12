@@ -1,12 +1,12 @@
 import express from "express"
-import { User, UserVerification, PasswordReset } from "../models/userhandler.js"
+import { User, UserVerification } from "../../../Backend/src/Connections/database.js"
 import bcrypt from "bcrypt"
 import dotenv from "dotenv"
 import nodemailer from "nodemailer"
 import { v4 as uuidv4 } from "uuid"
 import path from "path"
 import { fileURLToPath } from "url"
-import { GridFSBucket } from "mongodb"
+import { PasswordReset } from "../../../Backend/src/Connections/database.js"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -35,9 +35,9 @@ transporter.verify((error, success) => {
 
 router.post("/signup", (req, res) => {
     let { name, email, password } = req.body
-    // name = name.trim()
-    // email = email.trim()
-    // password = password.trim()
+    name = name.trim()
+    email = email.trim()
+    password = password.trim()
 
     if (name === "" || email === "" || password === "") {
         res.json({
@@ -109,7 +109,7 @@ router.post("/signup", (req, res) => {
 })
 
 const sendVerificationEmail = ({ _id, email }, res) => {
-    const currentUrl = "http://192.168.43.89:5000/"
+    const currentUrl = "http://192.168.100.19:5000/"
     const uniqueString = uuidv4() + _id
     const mailOptions = {
         from: process.env.AUTH_EMAIL,
@@ -483,59 +483,6 @@ router.post("/resetPassword", (req, res) => {
                 message: "Checking for existing password record failed",
             })
         })
-})
-
-router.get("/profile/:userId", (req, res) => {
-    const { userId } = req.params
-
-    User.findById(userId)
-        .then((user) => {
-            if (user) {
-                res.json({
-                    status: "SUCCESS",
-                    user: {
-                        name: user.name,
-                        email: user.email,
-                        verified: user.verified,
-                    },
-                })
-            } else {
-                res.json({
-                    status: "FAILED",
-                    message: "User not found",
-                })
-            }
-        })
-        .catch((err) => {
-            console.log(err)
-            res.json({
-                status: "FAILED",
-                message: "An error occurred while fetching user profile",
-            })
-        })
-})
-
-router.post("/logout", (req, res) => {
-    if (req.session) {
-        req.session.destroy((err) => {
-            if (err) {
-                res.json({
-                    status: "FAILED",
-                    message: "Logout failed!",
-                })
-            } else {
-                res.json({
-                    status: "SUCCESS",
-                    message: "Logout successful!",
-                })
-            }
-        })
-    } else {
-        res.json({
-            status: "SUCCESS",
-            message: "Logout successful!",
-        })
-    }
 })
 
 export default router
