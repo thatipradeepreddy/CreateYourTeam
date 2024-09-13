@@ -10,7 +10,10 @@ import { Maps } from './Source/Frontend/Pages/Maps'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { StackScreenProps } from '@react-navigation/stack'
 import { ForgotPassword } from './Source/Frontend/Pages/ForgotPassowrd'
-import { View, ActivityIndicator } from 'react-native' // Import these for the loading state
+import { View, ActivityIndicator, TouchableOpacity } from 'react-native' // Import these for the loading state
+import HomePage from './Source/Frontend/Pages/Home'
+import Icon from 'react-native-vector-icons/Ionicons'
+import Icons from 'react-native-vector-icons/MaterialIcons'
 
 const Stack = createStackNavigator()
 
@@ -62,6 +65,18 @@ const App = () => {
                         headerTitleAlign: 'center',
                     }}
                 />
+
+                <Stack.Screen
+                    name="homepage"
+                    options={{
+                        headerShown: true,
+                        headerTitle: 'Create Your Team',
+                        headerTitleAlign: 'center',
+                        animationEnabled: true,
+                    }}
+                >
+                    {(props) => <ProtectedRoute {...props} component={HomePage} />}
+                </Stack.Screen>
 
                 <Stack.Screen name="addplayer" options={{ headerShown: false }}>
                     {(props) => <ProtectedRoute {...props} component={BasicInfo} />}

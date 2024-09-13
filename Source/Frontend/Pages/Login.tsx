@@ -22,7 +22,7 @@ export function Login() {
         loginUser(user)
             .then((response: any) => {
                 if (response.success) {
-                    navigation.navigate('addplayer')
+                    navigation.navigate('homepage')
                 } else if (response.success === false) {
                     setErrorMessage('Login failed, Invalid credentials entered!')
                 }
