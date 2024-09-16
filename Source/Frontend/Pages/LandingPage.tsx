@@ -1,7 +1,8 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import { NavigationProps } from './Routes'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export function LandingPage() {
     const navigation = useNavigation<NavigationProps['navigation']>()

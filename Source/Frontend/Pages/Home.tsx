@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import {
     View,
@@ -10,15 +10,48 @@ import {
     ScrollView,
     TouchableOpacity,
     SafeAreaView,
+    Image,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { NavigationProps } from './Routes'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
+export interface UserData {
+    __v: number
+    _id: string
+    email: string
+    image: string
+    name: string
+    password: string
+    verified: boolean
+}
 
 const { width } = Dimensions.get('window')
-const boxSize = width - 80 // Full width boxes
+const boxSize = width - 80
 
 const HomePage: React.FC = () => {
     const navigation = useNavigation<NavigationProps['navigation']>()
+    const [imageUri, setImageUri] = useState<string | null | any>(null)
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const savedData = await AsyncStorage.getItem('userData')
+                if (savedData) {
+                    const parsedData: UserData = JSON.parse(savedData)
+                    setImageUri(parsedData.image || null)
+                }
+            } catch (error) {}
+        }
+
+        console.log(imageUri)
+
+        fetchUserData()
+    }, [])
+
+    const handleNavigate = () => {
+        navigation.navigate('profile')
+    }
 
     const scaleAnims = useRef(
         Array(6)
@@ -46,8 +79,10 @@ const HomePage: React.FC = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <TouchableOpacity style={styles.profileContainer}>
-                <Icon name="person-circle-outline" size={35} color="#fff" />
+            <TouchableOpacity style={styles.profileContainer} onPress={handleNavigate}>
+                <View>
+                    <Image source={{ uri: imageUri }} style={styles.image} />
+                </View>
             </TouchableOpacity>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 {['Teams', 'Fixtures', 'Players', 'Schedule', 'Upcoming', 'Tournaments'].map((item, index) => (
@@ -68,7 +103,6 @@ const HomePage: React.FC = () => {
     )
 }
 
-// Colors with light opacity
 const colors = [
     'rgba(0, 123, 255, 0.8)',
     'rgba(40, 167, 69, 0.8)',
@@ -83,19 +117,21 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f5f5f5',
     },
+    image: { resizeMode: 'contain', height: 40, width: 40, borderRadius: 50 },
     profileContainer: {
         position: 'absolute',
-        top: 10,
+        top: -45,
         right: 10,
         backgroundColor: 'rgba(0,0,0,0.5)',
         borderRadius: 25,
-        padding: 5,
-        zIndex: 1, // Make sure it's on top of other elements
+        zIndex: 1,
+        height: 40,
+        width: 40,
     },
     scrollContainer: {
         paddingBottom: 20,
         paddingHorizontal: 20,
-        paddingTop: 70, // Add padding to avoid overlap with the profile icon
+        paddingTop: 30,
     },
     box: {
         height: boxSize / 3,

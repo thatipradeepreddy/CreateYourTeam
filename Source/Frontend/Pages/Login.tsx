@@ -41,15 +41,13 @@ export function Login() {
     const renderUserName = () => {
         return (
             <View>
-                <Text>Email</Text>
                 <TextInput
                     value={enteredUsernameOrEmail}
                     style={styles.input}
                     onChangeText={(text) => setEnteredUsernameOrEmail(text)}
-                    placeholder="Enter Email or Username"
+                    placeholder="Enter Email"
                 />
 
-                <Text>Password</Text>
                 <View style={styles.passwordContainer}>
                     <TextInput
                         style={styles.inputPassword}
@@ -120,7 +118,7 @@ const styles = StyleSheet.create({
         borderColor: 'gray',
         borderWidth: 1,
         paddingHorizontal: 10,
-        marginBottom: 10,
+        marginBottom: 20,
         borderRadius: 6,
         color: 'black',
     },
@@ -159,8 +157,8 @@ const styles = StyleSheet.create({
     footer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingHorizontal: 20,
-        marginTop: 20,
+        paddingHorizontal: 4,
+        marginTop: 10,
     },
     linkText: {
         textDecorationLine: 'underline',
@@ -175,7 +173,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255, 0, 0, 0.1)',
         paddingHorizontal: 15,
         zIndex: 1000,
-        marginBottom: 20
+        marginBottom: 20,
     },
     errorMessage: {
         flex: 1,

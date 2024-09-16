@@ -34,7 +34,7 @@ transporter.verify((error, success) => {
 })
 
 router.post("/signup", (req, res) => {
-    let { name, email, password } = req.body
+    let { name, email, password, image } = req.body
     // name = name.trim()
     // email = email.trim()
     // password = password.trim()
@@ -75,6 +75,7 @@ router.post("/signup", (req, res) => {
                             const newUser = new User({
                                 name,
                                 email,
+                                image,
                                 password: hashedPassword,
                                 verified: false,
                             })
@@ -109,7 +110,7 @@ router.post("/signup", (req, res) => {
 })
 
 const sendVerificationEmail = ({ _id, email }, res) => {
-    const currentUrl = "http://192.168.43.89:5000/"
+    const currentUrl = "http://192.168.68.79:5000/"
     const uniqueString = uuidv4() + _id
     const mailOptions = {
         from: process.env.AUTH_EMAIL,

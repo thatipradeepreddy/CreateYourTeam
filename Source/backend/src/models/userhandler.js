@@ -37,11 +37,11 @@ const passwordResetSchema = new mongoose.Schema({
     expiresAt: { type: Date },
 })
 
-const User = mongoose.model("tradeuserdb", UserSchema)
+const User = mongoose.model("userdbnew", UserSchema)
 
-const UserVerification = mongoose.model("tradeuserverification", UserVerificationSchema)
+const UserVerification = mongoose.model("userpassowrdverfication", UserVerificationSchema)
 
-const PasswordReset = mongoose.model("tradeuserpasswordreset", passwordResetSchema)
+const PasswordReset = mongoose.model("userpasswordreset", passwordResetSchema)
 
 const CricketersData = mongoose.model("playerdata", CricketersSchema)
 

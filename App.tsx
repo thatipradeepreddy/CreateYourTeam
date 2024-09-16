@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import { View, ActivityIndicator } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { BasicInfo } from './Source/Frontend/Pages/BasicInfo'
@@ -7,13 +9,10 @@ import { PlayersList } from './Source/Frontend/Pages/PlayersList'
 import { RegisterUser } from './Source/Frontend/Pages/RegisterUser'
 import { LandingPage } from './Source/Frontend/Pages/LandingPage'
 import { Maps } from './Source/Frontend/Pages/Maps'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { StackScreenProps } from '@react-navigation/stack'
 import { ForgotPassword } from './Source/Frontend/Pages/ForgotPassowrd'
-import { View, ActivityIndicator, TouchableOpacity } from 'react-native' // Import these for the loading state
 import HomePage from './Source/Frontend/Pages/Home'
-import Icon from 'react-native-vector-icons/Ionicons'
-import Icons from 'react-native-vector-icons/MaterialIcons'
+import { Profile } from './Source/Frontend/Pages/Profile'
+import { StackScreenProps } from '@react-navigation/stack'
 
 const Stack = createStackNavigator()
 
@@ -22,13 +21,13 @@ interface ProtectedRouteProps extends StackScreenProps<any> {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ component: Component, ...rest }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null) // Start as null to represent loading
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
 
     useEffect(() => {
         const checkLoginStatus = async () => {
             try {
-                const userId = await AsyncStorage.getItem('userId')
-                setIsAuthenticated(!!userId)
+                const userData = await AsyncStorage.getItem('userData')
+                setIsAuthenticated(!!userData)
             } catch (error) {
                 console.error('Error checking login status:', error)
                 setIsAuthenticated(false)
@@ -38,7 +37,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ component: Component, .
         checkLoginStatus()
     }, [])
 
-    // While loading the authentication status, show a loading spinner
     if (isAuthenticated === null) {
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -51,11 +49,34 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ component: Component, .
 }
 
 const App = () => {
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
+
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+            try {
+                const userData = await AsyncStorage.getItem('userData')
+                setIsAuthenticated(!!userData)
+            } catch (error) {
+                console.error('Error checking login status:', error)
+                setIsAuthenticated(false)
+            }
+        }
+
+        checkLoginStatus()
+    }, [])
+
+    if (isAuthenticated === null) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+        )
+    }
+
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="landing">
+            <Stack.Navigator initialRouteName={isAuthenticated ? 'homepage' : 'landing'}>
                 <Stack.Screen name="landing" component={LandingPage} options={{ headerShown: false }} />
-
                 <Stack.Screen
                     name="login"
                     component={Login}
@@ -65,7 +86,6 @@ const App = () => {
                         headerTitleAlign: 'center',
                     }}
                 />
-
                 <Stack.Screen
                     name="homepage"
                     options={{
@@ -77,23 +97,29 @@ const App = () => {
                 >
                     {(props) => <ProtectedRoute {...props} component={HomePage} />}
                 </Stack.Screen>
-
+                <Stack.Screen
+                    name="profile"
+                    options={{
+                        headerShown: true,
+                        headerTitle: 'Profile',
+                        headerTitleAlign: 'center',
+                        animationEnabled: true,
+                    }}
+                >
+                    {(props) => <ProtectedRoute {...props} component={Profile} />}
+                </Stack.Screen>
                 <Stack.Screen name="addplayer" options={{ headerShown: false }}>
                     {(props) => <ProtectedRoute {...props} component={BasicInfo} />}
                 </Stack.Screen>
-
                 <Stack.Screen name="editplayer" options={{ headerShown: false }}>
                     {(props) => <ProtectedRoute {...props} component={BasicInfo} />}
                 </Stack.Screen>
-
                 <Stack.Screen name="playerslist" options={{ headerShown: false }}>
                     {(props) => <ProtectedRoute {...props} component={PlayersList} />}
                 </Stack.Screen>
-
                 <Stack.Screen name="location" options={{ headerShown: false }}>
                     {(props) => <ProtectedRoute {...props} component={Maps} />}
                 </Stack.Screen>
-
                 <Stack.Screen
                     name="register"
                     component={RegisterUser}
@@ -103,7 +129,6 @@ const App = () => {
                         headerTitleAlign: 'center',
                     }}
                 />
-
                 <Stack.Screen name="forgot" component={ForgotPassword} options={{ headerShown: false }} />
             </Stack.Navigator>
         </NavigationContainer>

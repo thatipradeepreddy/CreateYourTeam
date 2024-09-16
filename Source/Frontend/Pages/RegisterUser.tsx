@@ -5,6 +5,7 @@ import { UserProps, createUser } from '../Controls/common.control'
 import { NavigationProps } from './Routes'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Icons from 'react-native-vector-icons/MaterialIcons'
+import { ImageUpload } from '../Components/ImageUpload'
 
 export function RegisterUser() {
     const navigation = useNavigation<NavigationProps['navigation']>()
@@ -15,6 +16,7 @@ export function RegisterUser() {
     const [user, setUser] = useState<UserProps>({
         name: '',
         email: '',
+        image: '',
         password: '',
     })
 
@@ -47,6 +49,10 @@ export function RegisterUser() {
             .finally(() => {
                 setLoading(false)
             })
+    }
+
+    const handleImageSelect = (imageUri: string) => {
+        setUser({ ...user, image: imageUri })
     }
 
     const renderAlertMessage = () => {
@@ -94,7 +100,10 @@ export function RegisterUser() {
                         placeholder="Enter Email"
                     />
 
-                    <Text>Password</Text>
+                    <Text>Image(Optional)</Text>
+                    <ImageUpload onImageSelect={handleImageSelect} />
+
+                    <Text style={{ marginTop: 10 }}>Password</Text>
                     <View style={styles.passwordContainer}>
                         <TextInput
                             style={styles.inputPassword}

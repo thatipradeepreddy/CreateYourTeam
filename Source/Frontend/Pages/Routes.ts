@@ -5,6 +5,7 @@ export interface NavigationParamList {
 	register: undefined
 	playerslist: undefined
 	homepage: undefined | any
+	profile: undefined | any
 	addplayer: any
 	editplayer: any
 	location: any
