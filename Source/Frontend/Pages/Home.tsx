@@ -44,8 +44,6 @@ const HomePage: React.FC = () => {
             } catch (error) {}
         }
 
-        console.log(imageUri)
-
         fetchUserData()
     }, [])
 
@@ -106,6 +104,21 @@ const HomePage: React.FC = () => {
                     </TouchableWithoutFeedback>
                 ))}
             </ScrollView>
+
+            <View style={styles.footer}>
+                <TouchableOpacity style={styles.footerIcon}>
+                    <Icon name="add-circle-outline" size={30} color="#fff" />
+                    <Text style={styles.footerText}>Add</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.footerIcon}>
+                    <Icon name="pencil-outline" size={30} color="#fff" />
+                    <Text style={styles.footerText}>Edit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.footerIcon}>
+                    <Icon name="analytics-outline" size={30} color="#fff" />
+                    <Text style={styles.footerText}>Manipulate</Text>
+                </TouchableOpacity>
+            </View>
         </SafeAreaView>
     )
 }
@@ -124,7 +137,12 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f5f5f5',
     },
-    image: { resizeMode: 'contain', height: 40, width: 40, borderRadius: 50 },
+    image: {
+        resizeMode: 'contain',
+        height: 40,
+        width: 40,
+        borderRadius: 50,
+    },
     profileContainer: {
         position: 'absolute',
         top: -45,
@@ -152,6 +170,25 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',
+    },
+    footer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        backgroundColor: '#333',
+        paddingVertical: 10,
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+    },
+    footerIcon: {
+        alignItems: 'center',
+    },
+    footerText: {
+        color: '#fff',
+        fontSize: 12,
+        marginTop: 5,
     },
 })
 
