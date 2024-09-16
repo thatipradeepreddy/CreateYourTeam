@@ -77,6 +77,12 @@ const HomePage: React.FC = () => {
         }).start()
     }
 
+    const handleBoxPress = (item: string) => {
+        if (item === 'Teams') {
+            navigation.navigate('teamsList')
+        }
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <TouchableOpacity style={styles.profileContainer} onPress={handleNavigate}>
@@ -90,6 +96,7 @@ const HomePage: React.FC = () => {
                         key={item}
                         onPressIn={() => handlePressIn(index)}
                         onPressOut={() => handlePressOut(index)}
+                        onPress={() => handleBoxPress(item)}
                     >
                         <Animated.View
                             style={[styles.box, { backgroundColor: colors[index], transform: [{ scale: scaleAnims[index] }] }]}

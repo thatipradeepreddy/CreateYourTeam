@@ -13,6 +13,7 @@ import { ForgotPassword } from './Source/Frontend/Pages/ForgotPassowrd'
 import HomePage from './Source/Frontend/Pages/Home'
 import { Profile } from './Source/Frontend/Pages/Profile'
 import { StackScreenProps } from '@react-navigation/stack'
+import { TeamsList } from './Source/Frontend/Pages/Teams/TeamsList'
 
 const Stack = createStackNavigator()
 
@@ -107,6 +108,17 @@ const App = () => {
                     }}
                 >
                     {(props) => <ProtectedRoute {...props} component={Profile} />}
+                </Stack.Screen>
+                <Stack.Screen
+                    name="teamsList"
+                    options={{
+                        headerShown: true,
+                        headerTitle: 'Teams List',
+                        headerTitleAlign: 'center',
+                        animationEnabled: true,
+                    }}
+                >
+                    {(props) => <ProtectedRoute {...props} component={TeamsList} />}
                 </Stack.Screen>
                 <Stack.Screen name="addplayer" options={{ headerShown: false }}>
                     {(props) => <ProtectedRoute {...props} component={BasicInfo} />}
