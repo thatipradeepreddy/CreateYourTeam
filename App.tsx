@@ -14,6 +14,7 @@ import HomePage from './Source/Frontend/Pages/Home'
 import { Profile } from './Source/Frontend/Pages/Profile'
 import { StackScreenProps } from '@react-navigation/stack'
 import { TeamsList } from './Source/Frontend/Pages/Teams/TeamsList'
+import { Players } from './Source/Frontend/Pages/Teams/Players'
 
 const Stack = createStackNavigator()
 
@@ -119,6 +120,17 @@ const App = () => {
                     }}
                 >
                     {(props) => <ProtectedRoute {...props} component={TeamsList} />}
+                </Stack.Screen>
+                <Stack.Screen
+                    name="players"
+                    options={{
+                        headerShown: true,
+                        headerTitle: 'Players List',
+                        headerTitleAlign: 'center',
+                        animationEnabled: true,
+                    }}
+                >
+                    {(props) => <ProtectedRoute {...props} component={Players} />}
                 </Stack.Screen>
                 <Stack.Screen name="addplayer" options={{ headerShown: false }}>
                     {(props) => <ProtectedRoute {...props} component={BasicInfo} />}

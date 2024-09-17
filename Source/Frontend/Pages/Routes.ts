@@ -9,6 +9,7 @@ export interface NavigationParamList {
     teamsList: undefined | any
     addplayer: any
     editplayer: any
+	players: any
     location: any
     [key: string]: undefined
 }

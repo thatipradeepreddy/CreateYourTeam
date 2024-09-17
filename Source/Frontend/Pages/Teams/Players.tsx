@@ -19,7 +19,7 @@ interface PlayerProps {
     player: Player[]
 }
 
-export function TeamsList() {
+export function Players() {
     const [playerState, setPlayerState] = useState<PlayerProps[]>([])
     const [expandedTeams, setExpandedTeams] = useState<{
         [key: string]: boolean

@@ -78,6 +78,8 @@ const HomePage: React.FC = () => {
     const handleBoxPress = (item: string) => {
         if (item === 'Teams') {
             navigation.navigate('teamsList')
+        } else if (item === 'Players') {
+            navigation.navigate('players')
         }
     }
 
