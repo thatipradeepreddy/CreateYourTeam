@@ -5,17 +5,11 @@ import { postNewPlayer, postPlayer, updatePlayer } from '../Controls/common.cont
 import { NavigationProps } from './Routes'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { ImageUpload } from '../Components/ImageUpload'
-
-export interface Player {
-    name: string
-    age: string
-    nation: string
-    premierLeague: string
-    image: string
-}
+import { Player } from './type'
 
 export interface PlayerProps {
     _id?: string
+    email: string
     place: string
     player: Player[]
 }
@@ -25,6 +19,7 @@ export function BasicInfo() {
     const navigation = useNavigation<NavigationProps['navigation']>()
     const [statusMessage, setStatusMessage] = useState<string>('')
     const [playerState, setPlayerState] = useState<PlayerProps>({
+        email: '',
         place: '',
         player: [],
     })
@@ -47,13 +42,14 @@ export function BasicInfo() {
 
     const handleResetPlayerData = () => {
         setPlayerState({
+            email: '',
             place: '',
             player: [
                 {
                     name: '',
                     age: '',
                     nation: '',
-                    premierLeague: '',
+                    playerType: '',
                     image: '',
                 },
             ],
@@ -70,7 +66,7 @@ export function BasicInfo() {
                     name: '',
                     age: '',
                     nation: '',
-                    premierLeague: '',
+                    playerType: '',
                     image: '',
                 },
             ],
@@ -232,12 +228,12 @@ export function BasicInfo() {
                         <Text style={styles.inputHeadings}>Player Type</Text>
                         <TextInput
                             style={styles.input}
-                            onChangeText={(text) => handleChangePlayerData(index, 'premierLeague', text)}
+                            onChangeText={(text) => handleChangePlayerData(index, 'playerType', text)}
                             placeholder="Enter Player Type"
-                            value={player.premierLeague}
+                            value={player.playerType}
                             placeholderTextColor={'black'}
                         />
-                        
+
                         <Text style={styles.inputHeadings}>Image</Text>
                         <ImageUpload onImageSelect={handleImageSelect} />
                     </View>

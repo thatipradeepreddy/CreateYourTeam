@@ -1,10 +1,22 @@
-import { CricketersData } from "../models/userhandler.js"
+import { CricketersData, User } from "../models/userhandler.js"
 
 export const getDataById = async (request, response) => {
+    const { email } = request.query
+    const { id } = request.params
+
     try {
-        const product = await CricketersData.findById(request.params.id)
-        response.status(209).json(product)
+        const existingUser = await User.findOne({ email })
+        if (!existingUser) {
+            return response.status(404).json({ message: "User not found" })
+        }
+
+        const cricketer = await CricketersData.findById(id)
+        if (!cricketer) {
+            return response.status(404).json({ message: "Cricketer not found" })
+        }
+
+        response.status(200).json(cricketer)
     } catch (error) {
-        response.status(404).json({ message: error.message })
+        response.status(500).json({ message: error.message })
     }
 }

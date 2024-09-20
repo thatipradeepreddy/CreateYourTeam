@@ -3,7 +3,7 @@ export interface Player {
     name: string
     age: string
     nation: string
-    premierLeague: string
+    playerType: string
     image: string
 }
 

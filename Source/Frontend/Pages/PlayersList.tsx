@@ -22,7 +22,7 @@ interface Player {
     name: string
     age: string
     nation: string
-    premierLeague: string
+    playerType: string
     image: string
 }
 
@@ -301,7 +301,7 @@ export function PlayersList() {
                                         </View>
                                         <View style={styles.row}>
                                             <Text style={styles.label}>Player Type:</Text>
-                                            <Text>{player.premierLeague}</Text>
+                                            <Text>{player.playerType}</Text>
                                         </View>
                                     </View>
                                     <View style={styles.iconsContainer}>
