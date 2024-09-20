@@ -15,6 +15,8 @@ import { Profile } from './Source/Frontend/Pages/Profile'
 import { StackScreenProps } from '@react-navigation/stack'
 import { TeamsList } from './Source/Frontend/Pages/Teams/TeamsList'
 import { Players } from './Source/Frontend/Pages/Teams/Players'
+import { Provider } from 'react-redux'
+import store from './Source/Frontend/Redux/store'
 
 const Stack = createStackNavigator()
 
@@ -76,86 +78,88 @@ const App = () => {
     }
 
     return (
-        <NavigationContainer>
-            <Stack.Navigator initialRouteName={isAuthenticated ? 'homepage' : 'landing'}>
-                <Stack.Screen name="landing" component={LandingPage} options={{ headerShown: false }} />
-                <Stack.Screen
-                    name="login"
-                    component={Login}
-                    options={{
-                        headerShown: true,
-                        headerTitle: 'Login to Continue',
-                        headerTitleAlign: 'center',
-                    }}
-                />
-                <Stack.Screen
-                    name="homepage"
-                    options={{
-                        headerShown: true,
-                        headerTitle: 'Create Your Team',
-                        headerTitleAlign: 'center',
-                        animationEnabled: true,
-                    }}
-                >
-                    {(props) => <ProtectedRoute {...props} component={HomePage} />}
-                </Stack.Screen>
-                <Stack.Screen
-                    name="profile"
-                    options={{
-                        headerShown: true,
-                        headerTitle: 'Profile',
-                        headerTitleAlign: 'center',
-                        animationEnabled: true,
-                    }}
-                >
-                    {(props) => <ProtectedRoute {...props} component={Profile} />}
-                </Stack.Screen>
-                <Stack.Screen
-                    name="teamsList"
-                    options={{
-                        headerShown: true,
-                        headerTitle: 'Teams List',
-                        headerTitleAlign: 'center',
-                        animationEnabled: true,
-                    }}
-                >
-                    {(props) => <ProtectedRoute {...props} component={TeamsList} />}
-                </Stack.Screen>
-                <Stack.Screen
-                    name="players"
-                    options={{
-                        headerShown: true,
-                        headerTitle: 'Players List',
-                        headerTitleAlign: 'center',
-                        animationEnabled: true,
-                    }}
-                >
-                    {(props) => <ProtectedRoute {...props} component={Players} />}
-                </Stack.Screen>
-                <Stack.Screen name="addplayer" options={{ headerShown: false }}>
-                    {(props) => <ProtectedRoute {...props} component={BasicInfo} />}
-                </Stack.Screen>
-                <Stack.Screen name="editplayer" options={{ headerShown: false }}>
-                    {(props) => <ProtectedRoute {...props} component={BasicInfo} />}
-                </Stack.Screen>
-                <Stack.Screen name="playerslist" options={{ headerShown: false }}>
-                    {(props) => <ProtectedRoute {...props} component={PlayersList} />}
-                </Stack.Screen>
-                <Stack.Screen name="location" options={{ headerShown: false }}>
-                    {(props) => <ProtectedRoute {...props} component={Maps} />}
-                </Stack.Screen>
-                <Stack.Screen
-                    name="register"
-                    component={RegisterUser}
-                    options={{
-                        headerShown: true,
-                        headerTitle: 'Register User',
-                        headerTitleAlign: 'center',
-                    }}
-                />
-                <Stack.Screen name="forgot" component={ForgotPassword} options={{ headerShown: false }} />
-            </Stack.Navigator>
-        </NavigationContainer>
+        <Provider store={store}>
+            <NavigationContainer>
+                <Stack.Navigator initialRouteName={isAuthenticated ? 'homepage' : 'landing'}>
+                    <Stack.Screen name="landing" component={LandingPage} options={{ headerShown: false }} />
+                    <Stack.Screen
+                        name="login"
+                        component={Login}
+                        options={{
+                            headerShown: true,
+                            headerTitle: 'Login to Continue',
+                            headerTitleAlign: 'center',
+                        }}
+                    />
+                    <Stack.Screen
+                        name="homepage"
+                        options={{
+                            headerShown: true,
+                            headerTitle: 'Create Your Team',
+                            headerTitleAlign: 'center',
+                            animationEnabled: true,
+                        }}
+                    >
+                        {(props) => <ProtectedRoute {...props} component={HomePage} />}
+                    </Stack.Screen>
+                    <Stack.Screen
+                        name="profile"
+                        options={{
+                            headerShown: true,
+                            headerTitle: 'Profile',
+                            headerTitleAlign: 'center',
+                            animationEnabled: true,
+                        }}
+                    >
+                        {(props) => <ProtectedRoute {...props} component={Profile} />}
+                    </Stack.Screen>
+                    <Stack.Screen
+                        name="teamsList"
+                        options={{
+                            headerShown: true,
+                            headerTitle: 'Teams List',
+                            headerTitleAlign: 'center',
+                            animationEnabled: true,
+                        }}
+                    >
+                        {(props) => <ProtectedRoute {...props} component={TeamsList} />}
+                    </Stack.Screen>
+                    <Stack.Screen
+                        name="players"
+                        options={{
+                            headerShown: true,
+                            headerTitle: 'Players List',
+                            headerTitleAlign: 'center',
+                            animationEnabled: true,
+                        }}
+                    >
+                        {(props) => <ProtectedRoute {...props} component={Players} />}
+                    </Stack.Screen>
+                    <Stack.Screen name="addplayer" options={{ headerShown: false }}>
+                        {(props) => <ProtectedRoute {...props} component={BasicInfo} />}
+                    </Stack.Screen>
+                    <Stack.Screen name="editplayer" options={{ headerShown: false }}>
+                        {(props) => <ProtectedRoute {...props} component={BasicInfo} />}
+                    </Stack.Screen>
+                    <Stack.Screen name="playerslist" options={{ headerShown: false }}>
+                        {(props) => <ProtectedRoute {...props} component={PlayersList} />}
+                    </Stack.Screen>
+                    <Stack.Screen name="location" options={{ headerShown: false }}>
+                        {(props) => <ProtectedRoute {...props} component={Maps} />}
+                    </Stack.Screen>
+                    <Stack.Screen
+                        name="register"
+                        component={RegisterUser}
+                        options={{
+                            headerShown: true,
+                            headerTitle: 'Register User',
+                            headerTitleAlign: 'center',
+                        }}
+                    />
+                    <Stack.Screen name="forgot" component={ForgotPassword} options={{ headerShown: false }} />
+                </Stack.Navigator>
+            </NavigationContainer>
+        </Provider>
     )
 }
 

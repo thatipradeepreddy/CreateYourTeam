@@ -4,38 +4,22 @@ import { useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { fetchPlayers, getPlayerById } from '../../Controls/common.control'
 import { NavigationProps } from '../Routes'
-// import { Player } from "./BasicInfo";
-
-interface Player {
-    name: string
-    age: string
-    nation: string
-    premierLeague: string
-    image: string
-}
-
-interface PlayerProps {
-    _id: string
-    place: string
-    player: Player[]
-}
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '../../Redux/store'
+import { fetchPlayersRequest } from '../../Redux/players/playerSlice'
+import { Player, PlayerProps } from '../../Redux/players/players.type'
 
 export function TeamsList() {
-    const [isCheckedAll, setCheckedAll] = useState<boolean>(false)
     const navigation = useNavigation<NavigationProps['navigation']>()
-    const [playerState, setPlayerState] = useState<PlayerProps[]>([])
     const [expandedTeams, setExpandedTeams] = useState<{
         [key: string]: boolean
     }>({})
 
+    const dispatch = useDispatch()
+    const playerState = useSelector((state: RootState) => state.players.players)
+
     useEffect(() => {
-        fetchPlayers()
-            .then((res: any) => {
-                setPlayerState(res)
-            })
-            .catch((error: Error) => {
-                console.error('Error fetching players:', error.message)
-            })
+        dispatch(fetchPlayersRequest())
     }, [])
 
     const toggleTeamExpansion = (teamId: string) => {
