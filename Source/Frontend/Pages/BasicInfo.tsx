@@ -6,6 +6,8 @@ import { NavigationProps } from './Routes'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { ImageUpload } from '../Components/ImageUpload'
 import { Player } from './type'
+import { UserData } from './Home'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export interface PlayerProps {
     _id?: string
@@ -18,6 +20,7 @@ export function BasicInfo() {
     const [editPlayer, setEditPlayer] = useState<'add' | 'update' | 'addNew'>('add')
     const navigation = useNavigation<NavigationProps['navigation']>()
     const [statusMessage, setStatusMessage] = useState<string>('')
+    const [userData, setUserData] = useState<UserData | null>(null)
     const [playerState, setPlayerState] = useState<PlayerProps>({
         email: '',
         place: '',
@@ -39,6 +42,31 @@ export function BasicInfo() {
             setEditPlayer('addNew')
         }
     }, [route.params])
+
+    useEffect(() => {
+        if (userData) {
+            setPlayerState((prevState) => ({
+                ...prevState,
+                email: userData.email,
+            }))
+        }
+    }, [userData])
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const savedData = await AsyncStorage.getItem('userData')
+                if (savedData) {
+                    const parsedData: UserData = JSON.parse(savedData)
+                    setUserData(parsedData)
+                }
+            } catch (error) {
+                console.error('Failed to fetch user data:', error)
+            }
+        }
+
+        fetchUserData()
+    }, [])
 
     const handleResetPlayerData = () => {
         setPlayerState({
@@ -77,10 +105,17 @@ export function BasicInfo() {
         navigation.navigate('playerslist')
     }
 
-    const handleChangePlayerData = (index: number, field: keyof PlayerProps['player'][0], value: string) => {
+    const handleChangePlayerData = (index: number, field: keyof Player, value: string | number | undefined) => {
         const updatedPlayers = [...playerState.player]
-        updatedPlayers[index][field] = value
-        setPlayerState({ ...playerState, player: updatedPlayers })
+
+        if (updatedPlayers[index]) {
+            updatedPlayers[index] = {
+                ...updatedPlayers[index],
+                [field]: value,
+            } as Player
+
+            setPlayerState({ ...playerState, player: updatedPlayers })
+        }
     }
 
     const handleImageSelect = (imageUri: string) => {
@@ -243,12 +278,8 @@ export function BasicInfo() {
     )
 
     const render = () => {
-        const image = {
-            uri: 'https://images.unsplash.com/photo-1593341646782-e0b495cff86d?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwxMTM3MjU5NXx8ZW58MHx8fHx8https://images.unsplash.com/photo-1593341646647-75b32930e4a1?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjd8fGNyaWNrZXR8ZW58MHx8MHx8fDA%3D',
-        }
         return (
             <View style={styles.main}>
-                {/* <ImageBackground source={image} style={styles.backgroundImage}> */}
                 <View style={styles.backgroundImage}>
                     {renderHeader()}
                     <ScrollView contentContainerStyle={styles.scrollable}>{renderContent()}</ScrollView>
@@ -271,7 +302,6 @@ export function BasicInfo() {
                         {renderStatus()}
                     </View>
                 </View>
-                {/* </ImageBackground> */}
             </View>
         )
     }

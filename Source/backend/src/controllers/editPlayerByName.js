@@ -19,7 +19,6 @@ export const updatePlayerByIdAndName = async (request, response) => {
 			return response.status(404).json({ message: 'Player not found' })
 		}
 
-		// Update all fields for the player
 		cricketer.player[playerIndex] = {
 			...cricketer.player[playerIndex],
 			...updatedFields,
