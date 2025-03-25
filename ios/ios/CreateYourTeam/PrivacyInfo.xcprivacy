@@ -1,0 +1,9 @@
+{
+  "NSPrivacyAccessedAPITypes": [
+    {
+      "APIAccessType": "Read",
+      "APITypes": ["Location"]
+    }
+  ]
+}
+
